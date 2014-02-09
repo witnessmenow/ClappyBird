@@ -1,6 +1,5 @@
 package com.ladinc.clappybird.core.objects;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -8,7 +7,6 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.musicg.api.ClapApi;
 
 public class Bird {
 	
@@ -17,12 +15,8 @@ public class Bird {
 	
 	public Body body;
 	
-	private ClapApi clapApi;
-	
-	public Bird(World world, Vector2 position, ClapApi clapApi)
-	{
-		this.clapApi = clapApi;
-		
+	public Bird(World world, Vector2 position)
+	{		
 		//initialize body 
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
@@ -46,20 +40,9 @@ public class Bird {
 	    boxShape.dispose();
 	}
 	
-	public void processMovement(short[] sampleData)
+	public void jump()
 	{
-		byte[] byteArr = this.convertShortToByteArr(sampleData);
-		
 		//need to convert short[] to byte[] for isClap
-		if(this.clapApi.isClap(byteArr))
-		{			
-			this.body.applyForce(this.body.getWorldVector(new Vector2(0.0f, 100000.0f)), this.body.getWorldCenter(), true );
-		}
+		this.body.applyForce(this.body.getWorldVector(new Vector2(0.0f, 100000.0f)), this.body.getWorldCenter(), true );
 	}
-
-	private byte[] convertShortToByteArr(short[] sampleData) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }
