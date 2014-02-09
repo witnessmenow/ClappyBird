@@ -28,6 +28,10 @@ public class AudioThread implements Runnable{
         
         //TODO Set this up properly
         waveHeader = new WaveHeader();
+        waveHeader.setChannels(1);
+        waveHeader.setBitsPerSample(16);
+        waveHeader.setSampleRate(22050);
+        
         clapApi = new ClapApi(waveHeader);
         
         this.bird = bird;

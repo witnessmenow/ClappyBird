@@ -42,7 +42,8 @@ public class Bird {
 	
 	public void jump()
 	{
+		System.out.println("jump");
 		//need to convert short[] to byte[] for isClap
-		this.body.applyForce(this.body.getWorldVector(new Vector2(0.0f, 100000.0f)), this.body.getWorldCenter(), true );
+		this.body.applyForce(this.body.getWorldVector(new Vector2(0.0f, 500000.0f)), this.body.getWorldCenter(), true );
 	}
 }
