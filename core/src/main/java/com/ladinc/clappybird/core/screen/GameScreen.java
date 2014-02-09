@@ -2,6 +2,7 @@ package com.ladinc.clappybird.core.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.AudioRecorder;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -10,6 +11,8 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.ladinc.clappybird.core.ClappyBird;
 import com.ladinc.clappybird.core.objects.Bird;
+import com.musicg.api.ClapApi;
+import com.musicg.wave.WaveHeader;
 
 public class GameScreen implements Screen 
 {
@@ -35,6 +38,13 @@ public class GameScreen implements Screen
     
     private Box2DDebugRenderer debugRenderer;
 	
+    //part of musicg jar
+    private ClapApi clapApi;
+    
+    AudioRecorder recorder;
+    
+    private static final short[] shortPCM = new short[1024]; // 1024 samples
+    
 	public GameScreen(ClappyBird gs)
 	{
 		this.game = gs;
@@ -49,8 +59,15 @@ public class GameScreen implements Screen
     	
     	this.camera = new OrthographicCamera();
         this.camera.setToOrtho(false, this.screenWidth, this.screenHeight);
-        
         debugRenderer = new Box2DDebugRenderer();
+        
+        //This will create an AudioRecorder with a sampling rate of 22.05khz, in mono mode. 
+        //If the recorder couldn't be created, a GdxRuntimeException will be thrown.
+        recorder = Gdx.audio.newAudioRecorder(22050, true);
+        
+        //Set up for clapApi, part of musicg jar, which detetcs claps
+        WaveHeader waveHeader = new WaveHeader();
+        clapApi = new ClapApi(waveHeader);
 	}
 	
 	@Override
@@ -59,7 +76,8 @@ public class GameScreen implements Screen
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT); 
 		camera.update();
 		
-		this.bird.processMovement();
+		recorder.read(shortPCM, 0, shortPCM.length);
+		this.bird.processMovement(shortPCM);
 		
 		//world.step(Gdx.app.getGraphics().getDeltaTime(), 10, 10);
         //world.clearForces();
@@ -82,7 +100,7 @@ public class GameScreen implements Screen
 		
 		world = new World(new Vector2(0f, -80.0f), true);
 		
-		bird = new Bird(world, this.center);
+		bird = new Bird(world, this.center, this.clapApi);
 		
 	}
 
