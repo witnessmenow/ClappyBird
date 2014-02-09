@@ -53,10 +53,6 @@ public class GameScreen implements Screen
     	this.camera = new OrthographicCamera();
         this.camera.setToOrtho(false, this.screenWidth, this.screenHeight);
         debugRenderer = new Box2DDebugRenderer();
-        
-        audioThread = new AudioThread();
-        Thread t = new Thread(audioThread);
-        t.start();
 	}
 	
 	@Override
@@ -89,7 +85,15 @@ public class GameScreen implements Screen
 		world = new World(new Vector2(0f, -80.0f), true);
 		
 		bird = new Bird(world, this.center);
+
+		audioThread = new AudioThread(bird);
+        Thread t = new Thread(audioThread);
+        t.start();
 		
+	}
+
+	private void setBird(Bird bird) {
+		this.bird = bird;
 	}
 
 	@Override

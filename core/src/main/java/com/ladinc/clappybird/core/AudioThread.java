@@ -19,7 +19,7 @@ public class AudioThread implements Runnable{
     private static final short[] shortPCM = new short[1024]; // 1024 samples
     private WaveHeader waveHeader;
     
-    public AudioThread(){
+    public AudioThread(Bird bird){
     	///This will create an AudioRecorder with a sampling rate of 22.05khz, in mono mode. 
         //If the recorder couldn't be created, a GdxRuntimeException will be thrown.
         recorder = Gdx.audio.newAudioRecorder(22050, true);
@@ -30,7 +30,7 @@ public class AudioThread implements Runnable{
         waveHeader = new WaveHeader();
         clapApi = new ClapApi(waveHeader);
         
-        bird = GameScreen.getBird();
+        this.bird = bird;
     }
     
     //This should work out whether there was a clap or not and call jump then on the Bird object
@@ -50,8 +50,11 @@ public class AudioThread implements Runnable{
 				//{
 				//	bird.jump();
 				//}
-				
-				System.out.println("logs");
+
+				if(Gdx.input.justTouched())
+				{			
+					bird.jump();
+				}
 			}
 		}
 	}
