@@ -1,9 +1,11 @@
 package com.ladinc.clappybird.core;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.AudioRecorder;
 import com.ladinc.clappybird.core.objects.Bird;
-import com.ladinc.clappybird.core.screen.GameScreen;
 import com.musicg.api.ClapApi;
 import com.musicg.wave.WaveHeader;
 
@@ -63,9 +65,12 @@ public class AudioThread implements Runnable{
 		}
 	}
 	
-	private byte[] convertShortToByteArr(short[] sampleData) {
-		// TODO Auto-generated method stub
-		return null;
+	private byte[] convertShortToByteArr(short[] shrt_array) {
+		ByteBuffer buffer = ByteBuffer.allocate(shrt_array.length * 2);
+		buffer.order(ByteOrder.LITTLE_ENDIAN);
+		buffer.asShortBuffer().put(shrt_array);
+		byte[] bytes = buffer.array();
+		return bytes;
 	}
 
 }
