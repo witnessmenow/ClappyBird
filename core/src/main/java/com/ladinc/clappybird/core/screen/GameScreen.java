@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.ladinc.clappybird.core.AudioThread;
 import com.ladinc.clappybird.core.ClappyBird;
 import com.ladinc.clappybird.core.objects.Bird;
+import com.ladinc.clappybird.core.objects.BoxProp;
 
 public class GameScreen implements Screen 
 {
@@ -86,6 +87,9 @@ public class GameScreen implements Screen
 		
 		bird = new Bird(world, this.center);
 
+		new BoxProp(world, this.worldWidth, 1f, new Vector2(this.center.x, 0));
+		new BoxProp(world, this.worldWidth, 1f, new Vector2(this.center.x, this.worldHeight));
+		
 		audioThread = new AudioThread(bird);
         Thread t = new Thread(audioThread);
         t.start();

@@ -54,6 +54,7 @@ public class AudioThread implements Runnable{
 				//TODO: Throwing an exception at the moment. Prob to do with setting up the clapApi properly (wave header)
 				if(this.clapApi.isClap(byteArr))
 				{
+					Gdx.app.debug("AudioThread", "Clap Detected");
 					bird.jump();
 				}
 
