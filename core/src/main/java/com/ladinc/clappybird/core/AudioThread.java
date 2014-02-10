@@ -18,13 +18,13 @@ public class AudioThread implements Runnable{
     
     Bird bird;
     
-    private static final short[] shortPCM = new short[1024]; // 1024 samples
+    private static final short[] shortPCM = new short[2048]; // 1024 samples
     private WaveHeader waveHeader;
     
     public AudioThread(Bird bird){
     	///This will create an AudioRecorder with a sampling rate of 22.05khz, in mono mode. 
         //If the recorder couldn't be created, a GdxRuntimeException will be thrown.
-        recorder = Gdx.audio.newAudioRecorder(22050, true);
+        recorder = Gdx.audio.newAudioRecorder(44100, true);
         
         //Set up for clapApi, part of musicg jar, which detetcs claps
         
@@ -32,7 +32,7 @@ public class AudioThread implements Runnable{
         waveHeader = new WaveHeader();
         waveHeader.setChannels(1);
         waveHeader.setBitsPerSample(16);
-        waveHeader.setSampleRate(22050);
+        waveHeader.setSampleRate(44100);
         
         clapApi = new ClapApi(waveHeader);
         
@@ -52,15 +52,15 @@ public class AudioThread implements Runnable{
 			//need to convert short[] to byte[] for isClap
 			if(this.clapApi!=null){
 				//TODO: Throwing an exception at the moment. Prob to do with setting up the clapApi properly (wave header)
-				//if(this.clapApi.isClap(byteArr))
-				//{
-				//	bird.jump();
-				//}
-
-				if(Gdx.input.justTouched())
-				{			
+				if(this.clapApi.isClap(byteArr))
+				{
 					bird.jump();
 				}
+
+//				if(Gdx.input.justTouched())
+//				{			
+//					bird.jump();
+//				}
 			}
 		}
 	}
