@@ -17,8 +17,8 @@ public class ClappyBird extends Game {
 	@Override
 	public void create () 
 	{
-		//Gdx.app.setLogLevel(Application.LOG_DEBUG);
-		Gdx.app.setLogLevel(Application.LOG_INFO);
+		Gdx.app.setLogLevel(Application.LOG_DEBUG);
+		//Gdx.app.setLogLevel(Application.LOG_INFO);
 		
 		createScreens();
 		
