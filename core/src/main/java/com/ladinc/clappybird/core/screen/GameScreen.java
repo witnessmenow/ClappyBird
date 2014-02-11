@@ -52,14 +52,15 @@ public class GameScreen implements Screen
     	this.worldHeight = this.screenHeight / PIXELS_PER_METER;
     	this.worldWidth = this.screenWidth / PIXELS_PER_METER;
     	
+    	backgroundTexture = new Texture(Gdx.files.internal("../../clappybird/assets/background.png"));
+    	spriteBatch = new SpriteBatch();    
+
     	this.center = new Vector2(worldWidth / 2, worldHeight / 2);
     	
     	this.camera = new OrthographicCamera();
         this.camera.setToOrtho(false, this.screenWidth, this.screenHeight);
         debugRenderer = new Box2DDebugRenderer();
         
-        backgroundTexture = new Texture(Gdx.files.internal("../../clappybird/assets/background.png"));
-        spriteBatch = new SpriteBatch();    
 	}
 	
 	@Override
@@ -70,11 +71,12 @@ public class GameScreen implements Screen
 		
         world.step(1.0f/60.0f, 10, 10);
         
-        debugRenderer.render(world, camera.combined.scale(PIXELS_PER_METER,PIXELS_PER_METER,PIXELS_PER_METER));
 		
         spriteBatch.begin();
         spriteBatch.draw(backgroundTexture, 0, 0);
         spriteBatch.end();
+
+        debugRenderer.render(world, camera.combined.scale(PIXELS_PER_METER,PIXELS_PER_METER,PIXELS_PER_METER));
 	}
 
 	@Override
