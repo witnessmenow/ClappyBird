@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -19,6 +20,8 @@ public class GameScreen implements Screen
 	private OrthographicCamera camera;
     private SpriteBatch spriteBatch;
 
+    private Texture backgroundTexture;
+    
     private World world;
     
     //Used for sprites etc
@@ -53,6 +56,9 @@ public class GameScreen implements Screen
     	this.camera = new OrthographicCamera();
         this.camera.setToOrtho(false, this.screenWidth, this.screenHeight);
         debugRenderer = new Box2DDebugRenderer();
+        
+        backgroundTexture = new Texture(Gdx.files.internal("../../clappybird/assets/background.png"));
+        spriteBatch = new SpriteBatch();    
 	}
 	
 	@Override
@@ -61,15 +67,13 @@ public class GameScreen implements Screen
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT); 
 		camera.update();
 		
-		//this.bird.processMovement();
-		
-		//world.step(Gdx.app.getGraphics().getDeltaTime(), 10, 10);
-        //world.clearForces();
         world.step(1.0f/60.0f, 10, 10);
-        //world.clearForces();
         
         debugRenderer.render(world, camera.combined.scale(PIXELS_PER_METER,PIXELS_PER_METER,PIXELS_PER_METER));
 		
+        spriteBatch.begin();
+        spriteBatch.draw(backgroundTexture, 0, 0);
+        spriteBatch.end();
 	}
 
 	@Override
