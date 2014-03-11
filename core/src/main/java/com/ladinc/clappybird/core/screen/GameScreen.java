@@ -4,8 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
@@ -19,9 +21,6 @@ public class GameScreen implements Screen
 	private ClappyBird game;
 	
 	private OrthographicCamera camera;
-    private SpriteBatch spriteBatch;
-
-    private Texture backgroundTexture;
     
     private World world;
     
@@ -42,6 +41,11 @@ public class GameScreen implements Screen
     
     private AudioThread audioThread;
     
+    private TextureAtlas atlas;
+    
+    private SpriteBatch spriteBatch;
+    private Sprite sprite;
+    
 	public GameScreen(ClappyBird gs)
 	{
 		this.game = gs;
@@ -52,9 +56,16 @@ public class GameScreen implements Screen
     	this.worldHeight = this.screenHeight / PIXELS_PER_METER;
     	this.worldWidth = this.screenWidth / PIXELS_PER_METER;
     	
-    	backgroundTexture = new Texture(Gdx.files.internal("../../clappybird/assets/background.png"));
-    	spriteBatch = new SpriteBatch();    
-
+    	spriteBatch = new SpriteBatch();  
+    	
+    	// retrieve the splash image's region from the atlas
+    	atlas = new TextureAtlas( Gdx.files.internal( "../../clappybird/assets/atlas.txt" ) );
+        AtlasRegion region = atlas.findRegion( "bg_day" );
+        
+        sprite = new Sprite(region);
+        sprite.setPosition(0, 0);
+        sprite.scale(2.5f);
+        
     	this.center = new Vector2(worldWidth / 2, worldHeight / 2);
     	
     	this.camera = new OrthographicCamera();
@@ -70,13 +81,12 @@ public class GameScreen implements Screen
 		camera.update();
 		
         world.step(1.0f/60.0f, 10, 10);
-        
-		
-        spriteBatch.begin();
-        spriteBatch.draw(backgroundTexture, 0, 0);
-        spriteBatch.end();
 
         debugRenderer.render(world, camera.combined.scale(PIXELS_PER_METER,PIXELS_PER_METER,PIXELS_PER_METER));
+        
+        spriteBatch.begin();
+        sprite.draw(spriteBatch);
+        spriteBatch.end();
 	}
 
 	@Override
