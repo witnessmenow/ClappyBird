@@ -16,6 +16,7 @@ import com.ladinc.clappybird.core.AudioThread;
 import com.ladinc.clappybird.core.ClappyBird;
 import com.ladinc.clappybird.core.objects.Bird;
 import com.ladinc.clappybird.core.objects.BoxProp;
+import com.ladinc.clappybird.core.objects.Pipe;
 
 public class GameScreen implements Screen 
 {
@@ -40,6 +41,8 @@ public class GameScreen implements Screen
     private Vector2 center;
     
     private static Bird bird;
+    
+    private Pipe pipeLow;
     
     private Box2DDebugRenderer debugRenderer;
     
@@ -122,6 +125,9 @@ public class GameScreen implements Screen
 		
 		bird = new Bird(world, this.center);
 
+		pipeLow = new Pipe(world, new Vector2(center.x, 0));
+		
+		//set a box around the screen
 		new BoxProp(world, this.worldWidth, 1f, new Vector2(this.center.x, 0));
 		new BoxProp(world, this.worldWidth, 1f, new Vector2(this.center.x, this.worldHeight));
 		

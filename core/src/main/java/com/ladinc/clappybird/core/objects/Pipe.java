@@ -8,14 +8,14 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
-public class Bird {
+public class Pipe {
 	
-	public static float WIDTH = 2;
-	public static float HEIGHT = 2;
+	public static float WIDTH = 4;
+	public static float HEIGHT = 6;
 	
 	public Body body;
 	
-	public Bird(World world, Vector2 position)
+	public Pipe(World world, Vector2 position)
 	{		
 		//initialize body 
 		BodyDef bodyDef = new BodyDef();
@@ -28,7 +28,7 @@ public class Bird {
 	    //initialize shape
 		FixtureDef fixtureDef = new FixtureDef();
 		PolygonShape boxShape = new PolygonShape();
-		boxShape.setAsBox(Bird.WIDTH / 2, Bird.HEIGHT / 2);
+		boxShape.setAsBox(Pipe.WIDTH / 2, Pipe.HEIGHT / 2);
 		fixtureDef.shape=boxShape;
 		fixtureDef.density = 10f;
 		fixtureDef.friction = 0.3f;
