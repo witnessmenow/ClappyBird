@@ -7,7 +7,9 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.ladinc.clappybird.core.AudioThread;
@@ -44,6 +46,7 @@ public class GameScreen implements Screen
     private AudioThread audioThread;
 
 	private Texture birdTexture;
+    private Sprite birdSprite ;
     
 	public GameScreen(ClappyBird gs)
 	{
@@ -66,6 +69,24 @@ public class GameScreen implements Screen
         
 	}
 	
+	public static void updateSprite(Sprite sprite, SpriteBatch spriteBatch, int PIXELS_PER_METER, Body body)
+    {
+            if(sprite != null && spriteBatch != null && body != null)
+            {
+                    setSpritePosition(sprite, PIXELS_PER_METER, body);
+    
+                    sprite.draw(spriteBatch);
+            }
+    }
+    
+    public static void setSpritePosition(Sprite sprite, int PIXELS_PER_METER, Body body)
+    {
+            
+            sprite.setPosition(PIXELS_PER_METER * body.getPosition().x - sprite.getWidth()/2,
+                            PIXELS_PER_METER * body.getPosition().y  - sprite.getHeight()/2);
+            sprite.setRotation((MathUtils.radiansToDegrees * body.getAngle()));
+    }
+	
 	@Override
 	public void render(float delta) {
 
@@ -75,11 +96,13 @@ public class GameScreen implements Screen
         world.step(1.0f/60.0f, 10, 10);
         
         birdTexture = new Texture(Gdx.files.internal("../../clappybird/assets/birdMid.png"));
-		Sprite birdSprite = new Sprite(birdTexture);
-		birdSprite.setPosition(bird.getPos().x, bird.getPos().y);
+		birdSprite = new Sprite(birdTexture);
+		//birdSprite.setPosition(bird.getPos().x, bird.getPos().y);
         spriteBatch.begin();
         spriteBatch.draw(backgroundTexture, 0, 0);
-        spriteBatch.draw(birdSprite, bird.getPos().x, bird.getPos().y);
+        
+        //bird seems to operate in a different coordinate system to sprite
+        updateSprite(birdSprite, spriteBatch, PIXELS_PER_METER, bird.body);
         spriteBatch.end();
 
         debugRenderer.render(world, camera.combined.scale(PIXELS_PER_METER,PIXELS_PER_METER,PIXELS_PER_METER));
@@ -109,7 +132,7 @@ public class GameScreen implements Screen
 	}
 
 	private void setBird(Bird bird) {
-		this.bird = bird;
+		GameScreen.bird = bird;
 	}
 
 	@Override
