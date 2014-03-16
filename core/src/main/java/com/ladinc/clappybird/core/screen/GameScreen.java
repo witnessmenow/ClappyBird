@@ -1,5 +1,10 @@
 package com.ladinc.clappybird.core.screen;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
@@ -51,6 +56,13 @@ public class GameScreen implements Screen
 	private Texture birdTexture;
     private Sprite birdSprite ;
     
+    private Texture pipeTexture;
+    private Sprite pipeSprite ;
+    
+    private static boolean drawPipes = false;
+    
+    private static List<Pipe> listPipes = new ArrayList<Pipe>();
+    
 	public GameScreen(ClappyBird gs)
 	{
 		this.game = gs;
@@ -70,6 +82,7 @@ public class GameScreen implements Screen
         this.camera.setToOrtho(false, this.screenWidth, this.screenHeight);
         debugRenderer = new Box2DDebugRenderer();
         
+        drawPipe();
 	}
 	
 	public static void updateSprite(Sprite sprite, SpriteBatch spriteBatch, int PIXELS_PER_METER, Body body)
@@ -100,15 +113,45 @@ public class GameScreen implements Screen
         
         birdTexture = new Texture(Gdx.files.internal("../../clappybird/assets/birdMid.png"));
 		birdSprite = new Sprite(birdTexture);
-		//birdSprite.setPosition(bird.getPos().x, bird.getPos().y);
-        spriteBatch.begin();
+		
+		pipeTexture = new Texture(Gdx.files.internal("../../clappybird/assets/pipeUp.png"));
+		pipeSprite = new Sprite(pipeTexture);
+		
+		spriteBatch.begin();
+        
+        //set up background image
         spriteBatch.draw(backgroundTexture, 0, 0);
         
-        //bird seems to operate in a different coordinate system to sprite
+        //bird seems to operate in a different coordinate system to sprite, need to alter by a factor of PIXELS_PER_METER
         updateSprite(birdSprite, spriteBatch, PIXELS_PER_METER, bird.body);
-        spriteBatch.end();
+        
+        //draw pipe image over pipe objects
+		for(Pipe p : listPipes)
+		{
+			System.out.println(listPipes.size());
+			updateSprite(pipeSprite, spriteBatch, PIXELS_PER_METER, p.body);
+		}
+		  
+		  spriteBatch.end();
 
         debugRenderer.render(world, camera.combined.scale(PIXELS_PER_METER,PIXELS_PER_METER,PIXELS_PER_METER));
+	}
+
+	private void drawPipe() {
+		//set up a timer to have the 'intro' part to the level, which sets a flag which indicates the free ride 
+        //part of the start of the level has finished
+        Timer introTimer = new Timer(true);
+        introTimer.schedule(
+            new TimerTask() {
+              public void run() { 
+            	  // draw a pipe every second after a delay of 5 seconds.
+            	  // A new pipe will be drawn every second at the edge of the screen. Pipes
+            	  // will move with consistent velocity in the -x direction
+            	  Pipe p = new Pipe(world, new Vector2(bird.getPos().x*PIXELS_PER_METER - 100, 100));         
+            	  listPipes.add(p);
+            	  System.out.println("new pipe added");
+              }
+            }, 5000, 10000);
 	}
 
 	@Override
@@ -120,12 +163,9 @@ public class GameScreen implements Screen
 	@Override
 	public void show() 
 	{
-		
 		world = new World(new Vector2(0f, -80.0f), true);
 		
 		bird = new Bird(world, this.center);
-
-		pipeLow = new Pipe(world, new Vector2(center.x, 0));
 		
 		//set a box around the screen
 		new BoxProp(world, this.worldWidth, 1f, new Vector2(this.center.x, 0));

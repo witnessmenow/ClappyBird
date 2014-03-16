@@ -40,13 +40,6 @@ public class Pipe {
 	    boxShape.dispose();
 	}
 	
-	public void jump()
-	{
-		System.out.println("jump");
-		//need to convert short[] to byte[] for isClap
-		this.body.applyForce(this.body.getWorldVector(new Vector2(0.0f, 300000.0f)), this.body.getWorldCenter(), true );
-	}
-	
 	public Vector2 getPos(){
 		return this.body.getPosition();
 	}
