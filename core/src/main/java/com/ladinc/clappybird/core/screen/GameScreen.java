@@ -15,12 +15,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.ladinc.clappybird.core.AudioThread;
 import com.ladinc.clappybird.core.ClappyBird;
 import com.ladinc.clappybird.core.objects.Bird;
-import com.ladinc.clappybird.core.objects.BoxProp;
 import com.ladinc.clappybird.core.objects.Pipe;
 
 public class GameScreen implements Screen 
@@ -47,8 +49,6 @@ public class GameScreen implements Screen
     
     private static Bird bird;
     
-    private Pipe pipeLow;
-    
     private Box2DDebugRenderer debugRenderer;
     
     private AudioThread audioThread;
@@ -58,8 +58,6 @@ public class GameScreen implements Screen
     
     private Texture pipeTexture;
     private Sprite pipeSprite ;
-    
-    private static boolean drawPipes = false;
     
     private static List<Pipe> listPipes = new ArrayList<Pipe>();
     
@@ -82,7 +80,6 @@ public class GameScreen implements Screen
         this.camera.setToOrtho(false, this.screenWidth, this.screenHeight);
         debugRenderer = new Box2DDebugRenderer();
         
-        drawPipe();
 	}
 	
 	public static void updateSprite(Sprite sprite, SpriteBatch spriteBatch, int PIXELS_PER_METER, Body body)
@@ -128,16 +125,21 @@ public class GameScreen implements Screen
         //draw pipe image over pipe objects
 		for(Pipe p : listPipes)
 		{
-			System.out.println(listPipes.size());
 			updateSprite(pipeSprite, spriteBatch, PIXELS_PER_METER, p.body);
 		}
-		  
-		  spriteBatch.end();
+		 
+		spriteBatch.end();
 
+		for(Pipe p : listPipes)
+		{
+			//p.body.getPosition().x = p.body.getPosition().x - 1;
+			p.body.setLinearVelocity(new Vector2(-5, 0));
+		}
+		
         debugRenderer.render(world, camera.combined.scale(PIXELS_PER_METER,PIXELS_PER_METER,PIXELS_PER_METER));
 	}
 
-	private void drawPipe() {
+	private void drawPipeAtIntervals() {
 		//set up a timer to have the 'intro' part to the level, which sets a flag which indicates the free ride 
         //part of the start of the level has finished
         Timer introTimer = new Timer(true);
@@ -147,9 +149,8 @@ public class GameScreen implements Screen
             	  // draw a pipe every second after a delay of 5 seconds.
             	  // A new pipe will be drawn every second at the edge of the screen. Pipes
             	  // will move with consistent velocity in the -x direction
-            	  Pipe p = new Pipe(world, new Vector2(bird.getPos().x*PIXELS_PER_METER - 100, 100));         
+            	  Pipe p = new Pipe(world, new Vector2(center.x+30, 8));         
             	  listPipes.add(p);
-            	  System.out.println("new pipe added");
               }
             }, 5000, 10000);
 	}
@@ -168,8 +169,22 @@ public class GameScreen implements Screen
 		bird = new Bird(world, this.center);
 		
 		//set a box around the screen
-		new BoxProp(world, this.worldWidth, 1f, new Vector2(this.center.x, 0));
-		new BoxProp(world, this.worldWidth, 1f, new Vector2(this.center.x, this.worldHeight));
+		//new BoxProp(world, this.worldWidth, 1f, new Vector2(this.center.x, 0));
+		//new BoxProp(world, this.worldWidth, 1f, new Vector2(this.center.x, this.worldHeight));
+		
+		// Create our body definition
+	    BodyDef groundBodyDef = new BodyDef();
+	    groundBodyDef.type = BodyType.StaticBody;
+
+		// Create our line
+		// Create a body from the defintion and add it to the world
+        Body groundBody = world.createBody(groundBodyDef);
+        EdgeShape ground = new EdgeShape();
+        ground.set(0, 0, screenWidth, 0);
+        groundBody.createFixture(ground, 0.0f);
+        ground.dispose();
+        
+		drawPipeAtIntervals();
 		
 		audioThread = new AudioThread(bird);
         Thread t = new Thread(audioThread);

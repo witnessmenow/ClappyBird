@@ -11,7 +11,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 public class Pipe {
 	
 	public static float WIDTH = 4;
-	public static float HEIGHT = 6;
+	public static float HEIGHT = 20;
 	
 	public Body body;
 	
