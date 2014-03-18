@@ -7,7 +7,6 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.ladinc.clappybird.core.collision.CollisionHelper;
 
 public class Bird {
 	
@@ -36,15 +35,13 @@ public class Bird {
 		fixtureDef.restitution=0.4f; //positively bouncy!
 	    this.body.createFixture(fixtureDef);
 	    
-	    this.body.setUserData(new CollisionHelper());
-	    
 	    boxShape.dispose();
 	}
 	
 	public void jump()
 	{
 		//need to convert short[] to byte[] for isClap
-		this.body.applyForce(this.body.getWorldVector(new Vector2(0.0f, 300000.0f)), this.body.getWorldCenter(), true );
+		this.body.applyForce(this.body.getWorldVector(new Vector2(0.0f, 90000.0f)), this.body.getWorldCenter(), true );
 	}
 	
 	public Vector2 getPos(){

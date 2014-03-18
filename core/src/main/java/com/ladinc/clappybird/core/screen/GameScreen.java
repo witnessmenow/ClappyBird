@@ -23,6 +23,7 @@ import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.ladinc.clappybird.core.AudioThread;
 import com.ladinc.clappybird.core.ClappyBird;
+import com.ladinc.clappybird.core.collision.CollisionHelper;
 import com.ladinc.clappybird.core.objects.Bird;
 import com.ladinc.clappybird.core.objects.Pipe;
 
@@ -61,6 +62,8 @@ public class GameScreen implements Screen
     private Sprite pipeSprite ;
     
     private static List<Pipe> listPipes = new ArrayList<Pipe>();
+    
+    private float timer = 0f;
     
 	public GameScreen(ClappyBird gs)
 	{
@@ -104,6 +107,8 @@ public class GameScreen implements Screen
 	@Override
 	public void render(float delta) {
 
+		timer = timer + delta;
+		
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT); 
 		camera.update();
 		
@@ -123,6 +128,19 @@ public class GameScreen implements Screen
         //bird seems to operate in a different coordinate system to sprite, need to alter by a factor of PIXELS_PER_METER
         updateSprite(birdSprite, spriteBatch, PIXELS_PER_METER, bird.body);
         
+        if(timer > 100){
+          delta = 0f;
+          
+          Random rand = new Random();
+
+      	  // nextInt is normally exclusive of the top value,
+      	  // so add 1 to make it inclusive
+      	  int randomNum = rand.nextInt((20 - 1) + 1) + 1;
+      	  Pipe p = new Pipe(world, new Vector2(center.x+30, randomNum));//8         
+      	  listPipes.add(p);
+        }
+        
+        
         //draw pipe image over pipe objects
 		for(Pipe p : listPipes)
 		{
@@ -139,29 +157,7 @@ public class GameScreen implements Screen
 		
         debugRenderer.render(world, camera.combined.scale(PIXELS_PER_METER,PIXELS_PER_METER,PIXELS_PER_METER));
 	}
-
-	private void drawPipeAtIntervals() {
-		//set up a timer to have the 'intro' part to the level, which sets a flag which indicates the free ride 
-        //part of the start of the level has finished
-        Timer introTimer = new Timer(true);
-        introTimer.schedule(
-            new TimerTask() {
-              public void run() { 
-            	  // draw a pipe every second after a delay of 5 seconds.
-            	  // A new pipe will be drawn every second at the edge of the screen. Pipes
-            	  // will move with consistent velocity in the -x direction
-            	  // Usually this can be a field rather than a method variable
-            	  Random rand = new Random();
-
-            	  // nextInt is normally exclusive of the top value,
-            	  // so add 1 to make it inclusive
-            	  int randomNum = rand.nextInt((20 - 1) + 1) + 1;
-            	  Pipe p = new Pipe(world, new Vector2(center.x+30, randomNum));//8         
-            	  listPipes.add(p);
-              }
-            }, 5000, 10000);
-	}
-
+	
 	@Override
 	public void resize(int width, int height) {
 		// TODO Auto-generated method stub
@@ -175,6 +171,18 @@ public class GameScreen implements Screen
 		
 		bird = new Bird(world, this.center);
 		
+		//draw ground line
+		setUpGround();
+		
+		world.setContactListener(new CollisionHelper());
+		
+		audioThread = new AudioThread(bird);
+        Thread t = new Thread(audioThread);
+        t.start();
+		
+	}
+
+	private void setUpGround() {
 		// Create our body definition
 	    BodyDef groundBodyDef = new BodyDef();
 	    groundBodyDef.type = BodyType.StaticBody;
@@ -186,13 +194,6 @@ public class GameScreen implements Screen
         ground.set(0, 0, screenWidth, 0);
         groundBody.createFixture(ground, 0.0f);
         ground.dispose();
-        
-		drawPipeAtIntervals();
-		
-		audioThread = new AudioThread(bird);
-        Thread t = new Thread(audioThread);
-        t.start();
-		
 	}
 
 	private void setBird(Bird bird) {

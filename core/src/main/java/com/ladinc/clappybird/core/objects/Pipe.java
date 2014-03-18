@@ -36,8 +36,6 @@ public class Pipe {
 		fixtureDef.restitution=0.4f; //positively bouncy!
 	    this.body.createFixture(fixtureDef);
 	    
-	    this.body.setUserData(new CollisionHelper());
-	    
 	    boxShape.dispose();
 	}
 	
