@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.ladinc.clappybird.core.collision.CollisionHelper;
 
 public class Bird {
 	
@@ -35,7 +36,7 @@ public class Bird {
 		fixtureDef.restitution=0.4f; //positively bouncy!
 	    this.body.createFixture(fixtureDef);
 	    
-	    //this.body.setUserData(new CollisionInfo("Wall", CollisionObjectType.wall));
+	    this.body.setUserData(new CollisionHelper());
 	    
 	    boxShape.dispose();
 	}

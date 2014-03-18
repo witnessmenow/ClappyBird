@@ -134,7 +134,7 @@ public class GameScreen implements Screen
 		for(Pipe p : listPipes)
 		{
 			//p.body.getPosition().x = p.body.getPosition().x - 1;
-			p.body.setLinearVelocity(new Vector2(-8, 0));
+			p.body.setLinearVelocity(new Vector2(-12, 0));
 		}
 		
         debugRenderer.render(world, camera.combined.scale(PIXELS_PER_METER,PIXELS_PER_METER,PIXELS_PER_METER));
