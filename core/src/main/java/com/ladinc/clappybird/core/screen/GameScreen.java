@@ -175,10 +175,6 @@ public class GameScreen implements Screen
 		
 		bird = new Bird(world, this.center);
 		
-		//set a box around the screen
-		//new BoxProp(world, this.worldWidth, 1f, new Vector2(this.center.x, 0));
-		//new BoxProp(world, this.worldWidth, 1f, new Vector2(this.center.x, this.worldHeight));
-		
 		// Create our body definition
 	    BodyDef groundBodyDef = new BodyDef();
 	    groundBodyDef.type = BodyType.StaticBody;
