@@ -11,7 +11,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 public class Pipe {
 	
 	public static float WIDTH = 4;
-	public static float HEIGHT = 20;
+	public static float HEIGHT = 34;
 	
 	public Body body;
 	
@@ -19,7 +19,7 @@ public class Pipe {
 	{		
 		//initialize body 
 		BodyDef bodyDef = new BodyDef();
-		bodyDef.type = BodyType.DynamicBody;
+		bodyDef.type = BodyType.KinematicBody;
 		bodyDef.position.set(position);
 		bodyDef.angle = 0;
 		bodyDef.fixedRotation = true;

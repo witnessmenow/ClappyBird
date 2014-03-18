@@ -2,6 +2,7 @@ package com.ladinc.clappybird.core.screen;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -133,7 +134,7 @@ public class GameScreen implements Screen
 		for(Pipe p : listPipes)
 		{
 			//p.body.getPosition().x = p.body.getPosition().x - 1;
-			p.body.setLinearVelocity(new Vector2(-5, 0));
+			p.body.setLinearVelocity(new Vector2(-8, 0));
 		}
 		
         debugRenderer.render(world, camera.combined.scale(PIXELS_PER_METER,PIXELS_PER_METER,PIXELS_PER_METER));
@@ -149,7 +150,13 @@ public class GameScreen implements Screen
             	  // draw a pipe every second after a delay of 5 seconds.
             	  // A new pipe will be drawn every second at the edge of the screen. Pipes
             	  // will move with consistent velocity in the -x direction
-            	  Pipe p = new Pipe(world, new Vector2(center.x+30, 8));         
+            	  // Usually this can be a field rather than a method variable
+            	  Random rand = new Random();
+
+            	  // nextInt is normally exclusive of the top value,
+            	  // so add 1 to make it inclusive
+            	  int randomNum = rand.nextInt((20 - 1) + 1) + 1;
+            	  Pipe p = new Pipe(world, new Vector2(center.x+30, randomNum));//8         
             	  listPipes.add(p);
               }
             }, 5000, 10000);
