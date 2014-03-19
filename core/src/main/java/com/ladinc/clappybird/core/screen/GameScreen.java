@@ -63,7 +63,7 @@ public class GameScreen implements Screen
     
     private static List<Pipe> listPipes = new ArrayList<Pipe>();
     
-    private float timer = 0f;
+    private float timer;
     
 	public GameScreen(ClappyBird gs)
 	{
@@ -125,20 +125,21 @@ public class GameScreen implements Screen
         //set up background image
         spriteBatch.draw(backgroundTexture, 0, 0);
         
+        if(timer >= 1){
+        	timer = 0f;
+        	
+        	Random rand = new Random();
+        	
+        	// nextInt is normally exclusive of the top value,
+        	// so add 1 to make it inclusive
+        	int randomNum = rand.nextInt((20 - 1) + 1) + 1;
+        	
+        	listPipes.add(new Pipe(world, new Vector2(center.x+30, randomNum)));
+        }
+
         //bird seems to operate in a different coordinate system to sprite, need to alter by a factor of PIXELS_PER_METER
         updateSprite(birdSprite, spriteBatch, PIXELS_PER_METER, bird.body);
         
-        if(timer > 100){
-          delta = 0f;
-          
-          Random rand = new Random();
-
-      	  // nextInt is normally exclusive of the top value,
-      	  // so add 1 to make it inclusive
-      	  int randomNum = rand.nextInt((20 - 1) + 1) + 1;
-      	  Pipe p = new Pipe(world, new Vector2(center.x+30, randomNum));//8         
-      	  listPipes.add(p);
-        }
         
         
         //draw pipe image over pipe objects
