@@ -29,6 +29,8 @@ import com.ladinc.clappybird.core.objects.Pipe;
 
 public class GameScreen implements Screen 
 {
+	private static final String ASSETS_DIR = "../../clappybird/assets/";
+
 	private ClappyBird game;
 	
 	private OrthographicCamera camera;
@@ -64,6 +66,9 @@ public class GameScreen implements Screen
     private static List<Pipe> listPipes = new ArrayList<Pipe>();
     
     private float timer;
+    private int introTimer;
+
+	private boolean drawPipes;
     
 	public GameScreen(ClappyBird gs)
 	{
@@ -109,39 +114,30 @@ public class GameScreen implements Screen
 
 		timer = timer + delta;
 		
+		//used for intro sequence, no pipes for 5 secs
+		if(timer > 5)drawPipes = true;
+		
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT); 
 		camera.update();
 		
         world.step(1.0f/60.0f, 10, 10);
         
-        birdTexture = new Texture(Gdx.files.internal("../../clappybird/assets/birdMid.png"));
+        birdTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"birdMid.png"));
 		birdSprite = new Sprite(birdTexture);
 		
-		pipeTexture = new Texture(Gdx.files.internal("../../clappybird/assets/pipeUp.png"));
+		pipeTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"pipeUp.png"));
 		pipeSprite = new Sprite(pipeTexture);
 		
 		spriteBatch.begin();
         
         //set up background image
         spriteBatch.draw(backgroundTexture, 0, 0);
-        
-        if(timer >= 1){
-        	timer = 0f;
         	
-        	Random rand = new Random();
-        	
-        	// nextInt is normally exclusive of the top value,
-        	// so add 1 to make it inclusive
-        	int randomNum = rand.nextInt((20 - 1) + 1) + 1;
-        	
-        	listPipes.add(new Pipe(world, new Vector2(center.x+30, randomNum)));
-        }
+        drawPipeEachSecond();
 
         //bird seems to operate in a different coordinate system to sprite, need to alter by a factor of PIXELS_PER_METER
         updateSprite(birdSprite, spriteBatch, PIXELS_PER_METER, bird.body);
-        
-        
-        
+             
         //draw pipe image over pipe objects
 		for(Pipe p : listPipes)
 		{
@@ -153,10 +149,26 @@ public class GameScreen implements Screen
 		for(Pipe p : listPipes)
 		{
 			//p.body.getPosition().x = p.body.getPosition().x - 1;
-			p.body.setLinearVelocity(new Vector2(-12, 0));
+			p.body.setLinearVelocity(new Vector2(-10, 0));
 		}
 		
         debugRenderer.render(world, camera.combined.scale(PIXELS_PER_METER,PIXELS_PER_METER,PIXELS_PER_METER));
+	}
+
+	private void drawPipeEachSecond() {
+		if(drawPipes){
+				if(timer >= 1){
+	        	timer = 0f;
+	        	
+	        	Random rand = new Random();
+	        	
+	        	// nextInt is normally exclusive of the top value,
+	        	// so add 1 to make it inclusive
+	        	int randomNum = rand.nextInt((20 - 1) + 1) + 1;
+	        	
+	        	listPipes.add(new Pipe(world, new Vector2(center.x+30, randomNum)));
+			}
+		}
 	}
 	
 	@Override
