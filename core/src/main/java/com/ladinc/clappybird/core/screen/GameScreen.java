@@ -66,7 +66,6 @@ public class GameScreen implements Screen
     private static List<Pipe> listPipes = new ArrayList<Pipe>();
     
     private float timer;
-    private int introTimer;
 
 	private boolean drawPipes;
     
@@ -93,20 +92,20 @@ public class GameScreen implements Screen
 	
 	public static void updateSprite(Sprite sprite, SpriteBatch spriteBatch, int PIXELS_PER_METER, Body body)
     {
-            if(sprite != null && spriteBatch != null && body != null)
-            {
-                    setSpritePosition(sprite, PIXELS_PER_METER, body);
-    
-                    sprite.draw(spriteBatch);
-            }
+        if(sprite != null && spriteBatch != null && body != null)
+        {
+                setSpritePosition(sprite, PIXELS_PER_METER, body);
+
+                sprite.draw(spriteBatch);
+        }
     }
     
     public static void setSpritePosition(Sprite sprite, int PIXELS_PER_METER, Body body)
     {
-            
-            sprite.setPosition(PIXELS_PER_METER * body.getPosition().x - sprite.getWidth()/2,
-                            PIXELS_PER_METER * body.getPosition().y  - sprite.getHeight()/2);
-            sprite.setRotation((MathUtils.radiansToDegrees * body.getAngle()));
+        
+        sprite.setPosition(PIXELS_PER_METER * body.getPosition().x - sprite.getWidth()/2,
+                        PIXELS_PER_METER * body.getPosition().y  - sprite.getHeight()/2);
+        sprite.setRotation((MathUtils.radiansToDegrees * body.getAngle()));
     }
 	
 	@Override
@@ -156,18 +155,16 @@ public class GameScreen implements Screen
 	}
 
 	private void drawPipeEachSecond() {
-		if(drawPipes){
-				if(timer >= 1){
-	        	timer = 0f;
-	        	
-	        	Random rand = new Random();
-	        	
-	        	// nextInt is normally exclusive of the top value,
-	        	// so add 1 to make it inclusive
-	        	int randomNum = rand.nextInt((20 - 1) + 1) + 1;
-	        	
-	        	listPipes.add(new Pipe(world, new Vector2(center.x+30, randomNum)));
-			}
+		if(drawPipes && timer>=1){
+        	timer = 0f;
+        	
+        	Random rand = new Random();
+        	
+        	// nextInt is normally exclusive of the top value,
+        	// so add 1 to make it inclusive
+        	int randomNum = rand.nextInt((20 - 1) + 1) + 1;
+        	
+        	listPipes.add(new Pipe(world, new Vector2(center.x+30, randomNum)));
 		}
 	}
 	
