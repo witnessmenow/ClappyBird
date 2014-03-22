@@ -3,8 +3,6 @@ package com.ladinc.clappybird.core.screen;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -30,8 +28,6 @@ import com.ladinc.clappybird.core.objects.Pipe;
 public class GameScreen implements Screen 
 {
 	private static final String ASSETS_DIR = "../../clappybird/assets/";
-
-	private ClappyBird game;
 	
 	private OrthographicCamera camera;
     private SpriteBatch spriteBatch;
@@ -61,7 +57,9 @@ public class GameScreen implements Screen
     private Sprite birdSprite ;
     
     private Texture btmPipeTexture;
-    private Sprite btmPipeSprite ;
+    private Sprite btmPipeSprite;
+    
+    private Texture groundTexture;
     
     private Texture topPipeTexture;
     private Sprite topPipeSprite ;
@@ -72,24 +70,26 @@ public class GameScreen implements Screen
 
 	private boolean drawPipes;
     
+	private List<Pipe> scoresList = new ArrayList<Pipe>();
+
+	private static int score;
+	
 	public GameScreen(ClappyBird gs)
-	{
-		this.game = gs;
-		
+	{		
     	this.screenWidth = 480;
     	this.screenHeight = 800;
     	
     	this.worldHeight = this.screenHeight / PIXELS_PER_METER;
     	this.worldWidth = this.screenWidth / PIXELS_PER_METER;
     	
-    	backgroundTexture = new Texture(Gdx.files.internal("../../clappybird/assets/background.png"));
+    	backgroundTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"background.png"));
     	spriteBatch = new SpriteBatch();    
 
     	center = new Vector2(worldWidth / 2, worldHeight / 2);
     	
     	this.camera = new OrthographicCamera();
         this.camera.setToOrtho(false, this.screenWidth, this.screenHeight);
-        debugRenderer = new Box2DDebugRenderer();
+        //debugRenderer = new Box2DDebugRenderer();
         
 	}
 	
@@ -133,16 +133,19 @@ public class GameScreen implements Screen
 		topPipeTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"pipeDown.png"));
 		topPipeSprite = new Sprite(topPipeTexture);
 		
+		groundTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"ground.png"));
+		
 		spriteBatch.begin();
         
         //set up background image
         spriteBatch.draw(backgroundTexture, 0, 0);
         	
-        drawPipesAtIntervals();
-
+        
         //bird seems to operate in a different coordinate system to sprite, need to alter by a factor of PIXELS_PER_METER
         updateSprite(birdSprite, spriteBatch, PIXELS_PER_METER, bird.body);
              
+        drawPipesAtIntervals();
+        
         //draw pipe image over pipe objects
 		for(Pipe p : listPipes)
 		{
@@ -150,6 +153,9 @@ public class GameScreen implements Screen
 			updateSprite(topPipeSprite, spriteBatch, PIXELS_PER_METER, p.topPipe);
 		}
 		 
+		//add sprite for the ground
+		spriteBatch.draw(groundTexture, 0, 0);
+
 		spriteBatch.end();
 
 		for(Pipe p : listPipes)
@@ -159,19 +165,35 @@ public class GameScreen implements Screen
 			p.topPipe.setLinearVelocity(new Vector2(-10, 0));
 		}
 		
-        debugRenderer.render(world, camera.combined.scale(PIXELS_PER_METER,PIXELS_PER_METER,PIXELS_PER_METER));
+        //debugRenderer.render(world, camera.combined.scale(PIXELS_PER_METER,PIXELS_PER_METER,PIXELS_PER_METER));
+        
+        showScore();
+	}
+
+	private void showScore() {
+		for(Pipe p: listPipes){
+			if(p.btmPipe.getPosition().x < center.x){
+				//keep a unique list of the pipes that have passed the centre x point.
+				//Only add them to the list if they have newly passed this point
+				//The user's score is the size of the list then
+				if(!scoresList.contains(p))
+				{				
+					score = score + 1;
+				}
+			}
+		}		
 	}
 
 	private void drawPipesAtIntervals() {
-		if(drawPipes && timer>=2){
+		if(drawPipes && timer>=3.5){
         	timer = 0f;
         	
         	Random rand = new Random();
         	
         	// Want a random position for the gap to be places, between 2 and 10. 
         	// Each unit represents 5 units on the scale of the screen
-        	int low = 4; //minimum position for gap
-        	int high = 7; // max position for gap
+        	int low = 3; //minimum position for gap
+        	int high = 8; // max position for gap
         	int randomNum = rand.nextInt(high - low) + low;
         	listPipes.add(new Pipe(world, randomNum));
 		}
@@ -205,12 +227,12 @@ public class GameScreen implements Screen
 		// Create our body definition
 	    BodyDef groundBodyDef = new BodyDef();
 	    groundBodyDef.type = BodyType.StaticBody;
-
+	    
 		// Create our line
 		// Create a body from the definition and add it to the world
         Body groundBody = world.createBody(groundBodyDef);
         EdgeShape ground = new EdgeShape();
-        ground.set(0, 0, screenWidth, 0);
+        ground.set(0, 11, screenWidth, 11);
         groundBody.createFixture(ground, 0.0f);
         ground.dispose();
 	}

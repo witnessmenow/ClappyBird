@@ -35,7 +35,7 @@ public class Pipe {
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.KinematicBody;
 		
-		pipePosition.y = (9+gapPos)*5;
+		pipePosition.y = (12+gapPos)*5;
 		bodyDef.position.set(pipePosition);
 		bodyDef.angle = 0;
 		bodyDef.fixedRotation = true;
@@ -47,7 +47,7 @@ public class Pipe {
 		boxShape.setAsBox(Pipe.WIDTH / 2, Pipe.HEIGHT / 2);
 		fixtureDef.shape=boxShape;
 		fixtureDef.density = 10f;
-		fixtureDef.friction = 0.3f;
+		fixtureDef.friction = 0.0f;
 		fixtureDef.restitution=0.4f; //positively bouncy!
 	    this.topPipe.createFixture(fixtureDef);
 	    
@@ -71,7 +71,7 @@ public class Pipe {
 		boxShape.setAsBox(Pipe.WIDTH / 2, Pipe.HEIGHT / 2);
 		fixtureDef.shape=boxShape;
 		fixtureDef.density = 10f;
-		fixtureDef.friction = 0.3f;
+		fixtureDef.friction = 0.0f;
 		fixtureDef.restitution=0.4f; //positively bouncy!
 	    this.btmPipe.createFixture(fixtureDef);
 	    
