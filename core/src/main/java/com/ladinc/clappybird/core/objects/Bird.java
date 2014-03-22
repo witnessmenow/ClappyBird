@@ -31,7 +31,7 @@ public class Bird {
 		PolygonShape boxShape = new PolygonShape();
 		boxShape.setAsBox(Bird.WIDTH / 2, Bird.HEIGHT / 2);
 		fixtureDef.shape=boxShape;
-		fixtureDef.density = 10f;
+		fixtureDef.density = 15f;
 		fixtureDef.friction = 0.3f;
 		fixtureDef.restitution=0.4f; //positively bouncy!
 	    this.body.createFixture(fixtureDef);
@@ -43,7 +43,7 @@ public class Bird {
 	{
 		//need to convert short[] to byte[] for isClap
 		if(Gdx.input.justTouched()){
-			this.body.applyForce(this.body.getWorldVector(new Vector2(0.0f, 90000.0f)), this.body.getWorldCenter(), true );
+			this.body.applyForce(this.body.getWorldVector(new Vector2(0.0f, 100000.0f)), this.body.getWorldCenter(), true );
 		}
 	}
 	

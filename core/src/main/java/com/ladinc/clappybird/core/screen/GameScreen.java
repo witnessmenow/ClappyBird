@@ -59,7 +59,9 @@ public class GameScreen implements Screen
     private Texture btmPipeTexture;
     private Sprite btmPipeSprite;
     
-    private Texture scoreTexture;
+    private Texture scoreTexture1;
+    private Texture scoreTexture2;
+    private Texture scoreTexture3;
     
     private Texture groundTexture;
     
@@ -159,24 +161,8 @@ public class GameScreen implements Screen
 		 
 		//add sprite for the ground
 		spriteBatch.draw(groundTexture, 0, 0);
-		//showScore();
-
-		for(Pipe p: listPipes){
-			if(!scoresList.contains(p))
-			{	
-				if(p.getBtmPos().x < center.x){
-					scoresList.add(p);
-					//keep a unique list of the pipes that have passed the centre x point.
-					//Only add them to the list if they have newly passed this point
-					//The user's score is the size of the list then
-					score = score + 1;
-				}
-			}
-		}	
 		
-		scoreTexture = new Texture(Gdx.files.internal(ASSETS_DIR+score+".png"));
-		// draw the user's score on the screen
-		spriteBatch.draw(scoreTexture, 250, 700);
+		showScore();
 				
 		spriteBatch.end();
 
@@ -193,23 +179,41 @@ public class GameScreen implements Screen
 
 	private void showScore() {
 		for(Pipe p: listPipes){
-			
 			if(!scoresList.contains(p))
 			{	
-				scoresList.add(p);
-				
-				if(p.btmPipe.getPosition().x < center.x){
+				if(p.getBtmPos().x < center.x){
+					scoresList.add(p);
 					//keep a unique list of the pipes that have passed the centre x point.
 					//Only add them to the list if they have newly passed this point
 					//The user's score is the size of the list then
-						score = score + 1;
+					score = score + 1;
 				}
 			}
 		}	
 		
-		scoreTexture = new Texture(Gdx.files.internal(ASSETS_DIR+score+".png"));
+		String scoreStr = String.valueOf(score);
+		char[] scoreArr = scoreStr.toCharArray();
+		
+		if(score < 10){
+			scoreTexture1 = new Texture(Gdx.files.internal(ASSETS_DIR+scoreArr[0]+".png"));
+			scoreTexture2 = new Texture(Gdx.files.internal(ASSETS_DIR+"blank"+".png"));
+			scoreTexture3 = new Texture(Gdx.files.internal(ASSETS_DIR+"blank"+".png"));
+		}
+		else if(score < 100){
+			scoreTexture1 = new Texture(Gdx.files.internal(ASSETS_DIR+scoreArr[0]+".png"));
+			scoreTexture2 = new Texture(Gdx.files.internal(ASSETS_DIR+scoreArr[1]+".png"));
+			scoreTexture3 = new Texture(Gdx.files.internal(ASSETS_DIR+"blank"+".png"));
+		}
+		else if(score < 1000){
+			scoreTexture1 = new Texture(Gdx.files.internal(ASSETS_DIR+scoreArr[0]+".png"));
+			scoreTexture2 = new Texture(Gdx.files.internal(ASSETS_DIR+scoreArr[1]+".png"));
+			scoreTexture3 = new Texture(Gdx.files.internal(ASSETS_DIR+scoreArr[2]+".png"));
+		}
+		
 		// draw the user's score on the screen
-		spriteBatch.draw(scoreTexture, center.x, center.y);
+		spriteBatch.draw(scoreTexture1, 250, 700);
+		spriteBatch.draw(scoreTexture2, 265, 700);
+		spriteBatch.draw(scoreTexture3, 280, 700);
 	}
 
 	private void drawPipesAtIntervals() {
