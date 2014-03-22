@@ -30,7 +30,7 @@ public class GameScreen implements Screen
 	private static final String ASSETS_DIR = "../../clappybird/assets/";
 	
 	private OrthographicCamera camera;
-    private SpriteBatch spriteBatch;
+    private static SpriteBatch spriteBatch;
 
     private Texture backgroundTexture;
     
@@ -58,6 +58,8 @@ public class GameScreen implements Screen
     
     private Texture btmPipeTexture;
     private Sprite btmPipeSprite;
+    
+    private Texture scoreTexture;
     
     private Texture groundTexture;
     
@@ -89,7 +91,7 @@ public class GameScreen implements Screen
     	
     	this.camera = new OrthographicCamera();
         this.camera.setToOrtho(false, this.screenWidth, this.screenHeight);
-        //debugRenderer = new Box2DDebugRenderer();
+        debugRenderer = new Box2DDebugRenderer();
         
 	}
 	
@@ -155,7 +157,26 @@ public class GameScreen implements Screen
 		 
 		//add sprite for the ground
 		spriteBatch.draw(groundTexture, 0, 0);
+		//showScore();
 
+		for(Pipe p: listPipes){
+			if(!scoresList.contains(p))
+			{	
+				scoresList.add(p);
+				
+				if(p.getBtmPos().x < center.x){
+					//keep a unique list of the pipes that have passed the centre x point.
+					//Only add them to the list if they have newly passed this point
+					//The user's score is the size of the list then
+					score = score + 1;
+				}
+			}
+		}	
+		
+		scoreTexture = new Texture(Gdx.files.internal(ASSETS_DIR+score+".png"));
+		// draw the user's score on the screen
+		spriteBatch.draw(scoreTexture, 250, 700);
+				
 		spriteBatch.end();
 
 		for(Pipe p : listPipes)
@@ -165,23 +186,28 @@ public class GameScreen implements Screen
 			p.topPipe.setLinearVelocity(new Vector2(-10, 0));
 		}
 		
-        //debugRenderer.render(world, camera.combined.scale(PIXELS_PER_METER,PIXELS_PER_METER,PIXELS_PER_METER));
+        debugRenderer.render(world, camera.combined.scale(PIXELS_PER_METER,PIXELS_PER_METER,PIXELS_PER_METER));
         
-        showScore();
 	}
 
 	private void showScore() {
 		for(Pipe p: listPipes){
-			if(p.btmPipe.getPosition().x < center.x){
-				//keep a unique list of the pipes that have passed the centre x point.
-				//Only add them to the list if they have newly passed this point
-				//The user's score is the size of the list then
-				if(!scoresList.contains(p))
-				{				
-					score = score + 1;
+			if(!scoresList.contains(p))
+			{	
+				scoresList.add(p);
+				
+				if(p.btmPipe.getPosition().x < center.x){
+					//keep a unique list of the pipes that have passed the centre x point.
+					//Only add them to the list if they have newly passed this point
+					//The user's score is the size of the list then
+						score = score + 1;
 				}
 			}
-		}		
+		}	
+		
+		scoreTexture = new Texture(Gdx.files.internal(ASSETS_DIR+score+".png"));
+		// draw the user's score on the screen
+		spriteBatch.draw(scoreTexture, center.x, center.y);
 	}
 
 	private void drawPipesAtIntervals() {

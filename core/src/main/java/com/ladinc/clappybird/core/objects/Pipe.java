@@ -12,7 +12,7 @@ import com.ladinc.clappybird.core.screen.GameScreen;
 public class Pipe {
 	
 	public static float WIDTH = 4;
-	public static float HEIGHT = 34;
+	public static float HEIGHT = 50;
 	
 	public Body btmPipe;
 	public Body topPipe;
@@ -78,7 +78,7 @@ public class Pipe {
 	    boxShape.dispose();
 	}
 	
-	public Vector2 getPos(){
+	public Vector2 getBtmPos(){
 		return this.btmPipe.getPosition();
 	}
 }
