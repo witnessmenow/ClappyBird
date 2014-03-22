@@ -49,7 +49,7 @@ public class GameScreen implements Screen
     
     private static Bird bird;
     
-    private Box2DDebugRenderer debugRenderer;
+    //private Box2DDebugRenderer debugRenderer;
     
     private AudioThread audioThread;
 
@@ -91,7 +91,7 @@ public class GameScreen implements Screen
     	
     	this.camera = new OrthographicCamera();
         this.camera.setToOrtho(false, this.screenWidth, this.screenHeight);
-        debugRenderer = new Box2DDebugRenderer();
+        //debugRenderer = new Box2DDebugRenderer();
         
 	}
 	
@@ -116,6 +116,8 @@ public class GameScreen implements Screen
 	@Override
 	public void render(float delta) {
 
+		bird.jump();
+		
 		timer = timer + delta;
 		
 		//used for intro sequence, no pipes for 5 secs
@@ -162,9 +164,8 @@ public class GameScreen implements Screen
 		for(Pipe p: listPipes){
 			if(!scoresList.contains(p))
 			{	
-				scoresList.add(p);
-				
 				if(p.getBtmPos().x < center.x){
+					scoresList.add(p);
 					//keep a unique list of the pipes that have passed the centre x point.
 					//Only add them to the list if they have newly passed this point
 					//The user's score is the size of the list then
@@ -186,12 +187,13 @@ public class GameScreen implements Screen
 			p.topPipe.setLinearVelocity(new Vector2(-10, 0));
 		}
 		
-        debugRenderer.render(world, camera.combined.scale(PIXELS_PER_METER,PIXELS_PER_METER,PIXELS_PER_METER));
+        //debugRenderer.render(world, camera.combined.scale(PIXELS_PER_METER,PIXELS_PER_METER,PIXELS_PER_METER));
         
 	}
 
 	private void showScore() {
 		for(Pipe p: listPipes){
+			
 			if(!scoresList.contains(p))
 			{	
 				scoresList.add(p);
@@ -243,9 +245,9 @@ public class GameScreen implements Screen
 		
 		world.setContactListener(new CollisionHelper());
 		
-		audioThread = new AudioThread(bird);
-        Thread t = new Thread(audioThread);
-        t.start();
+		//audioThread = new AudioThread(bird);
+        //Thread t = new Thread(audioThread);
+        //t.start();
 		
 	}
 

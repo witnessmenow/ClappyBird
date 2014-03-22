@@ -1,12 +1,13 @@
 package com.ladinc.clappybird.core.objects;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
 public class Bird {
 	
@@ -41,7 +42,9 @@ public class Bird {
 	public void jump()
 	{
 		//need to convert short[] to byte[] for isClap
-		this.body.applyForce(this.body.getWorldVector(new Vector2(0.0f, 90000.0f)), this.body.getWorldCenter(), true );
+		if(Gdx.input.justTouched()){
+			this.body.applyForce(this.body.getWorldVector(new Vector2(0.0f, 90000.0f)), this.body.getWorldCenter(), true );
+		}
 	}
 	
 	public Vector2 getPos(){
