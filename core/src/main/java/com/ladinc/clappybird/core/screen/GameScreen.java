@@ -81,6 +81,8 @@ public class GameScreen implements Screen
 
 	private static int score;
 	
+	public static boolean demoOver = false;
+	
 	public GameScreen(ClappyBird gs)
 	{		
     	this.screenWidth = 480;
@@ -121,17 +123,19 @@ public class GameScreen implements Screen
 	@Override
 	public void render(float delta) {
 
-		bird.jump();
-		
-		timer = timer + delta;
-		
-		//used for intro sequence, no pipes for 5 secs
-		if(timer > 5)drawPipes = true;
+		bird.checkForJump();
 		
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT); 
 		camera.update();
 		
         world.step(1.0f/60.0f, 10, 10);
+        
+        if(demoOver){
+        
+        timer = timer + delta;
+        
+        //used for intro sequence, no pipes for 5 secs
+        if(timer > 5)drawPipes = true;
         
         birdTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"birdMid.png"));
 		birdSprite = new Sprite(birdTexture);
@@ -178,7 +182,11 @@ public class GameScreen implements Screen
 				p.topPipe.setLinearVelocity(new Vector2(-10, 0));
 			}
 		}
-			
+        }
+        else{
+        	//demo to the user, tap icon and floating bird displayed
+        	
+        }
         //debugRenderer.render(world, camera.combined.scale(PIXELS_PER_METER,PIXELS_PER_METER,PIXELS_PER_METER));
 	}
 
@@ -186,15 +194,14 @@ public class GameScreen implements Screen
 		for(int i =0; i < listPipes.size(); i++ ){
 			Pipe pipe = listPipes.get(i);
 			
-			if(scoresList.contains(pipe) && pipe.getBtmPos().x<-10){
+			if(pipe.getBtmPos().x<-10){
 				world.destroyBody(pipe.btmPipe);
 				pipe.btmPipe = null;
 				world.destroyBody(pipe.topPipe);
 				pipe.topPipe = null;
 
 				listPipes.remove(pipe);
-				scoresList.remove(pipe);
-				
+				scoresList.remove(pipe);	
 			}
 		}
 	}

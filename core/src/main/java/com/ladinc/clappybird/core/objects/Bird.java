@@ -40,12 +40,16 @@ public class Bird {
 	    boxShape.dispose();
 	}
 	
-	public void jump()
+	public void checkForJump()
 	{
-		//need to convert short[] to byte[] for isClap
-		if(Gdx.input.justTouched() && !GameScreen.gameOver){
-			this.body.applyForce(this.body.getWorldVector(new Vector2(0.0f, 100000.0f)), this.body.getWorldCenter(), true );
+		if(GameScreen.demoOver){
+			//need to convert short[] to byte[] for isClap
+			if(Gdx.input.justTouched() && !GameScreen.gameOver){
+				this.body.applyForce(this.body.getWorldVector(new Vector2(0.0f, 100000.0f)), this.body.getWorldCenter(), true );
+			}
 		}
+		
+		GameScreen.demoOver = true;
 	}
 	
 	public Vector2 getPos(){

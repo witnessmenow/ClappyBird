@@ -19,7 +19,8 @@ public class CollisionHelper implements ContactListener{
 	public void beginContact(Contact contact) 
 	{		
 		//boolean used to disable pipe and bird movement and show the game over screen
-		GameScreen.gameOver = true;  
+		if(GameScreen.demoOver){
+			GameScreen.gameOver = true;  
 		
 		//stop the pipes from moving on game over
 		for(Pipe p : GameScreen.listPipes){
@@ -30,6 +31,7 @@ public class CollisionHelper implements ContactListener{
 		
 		//if the bird hits a pipe we want it fall vertically down, not bounce off the pipe backwards
 		GameScreen.getBird().body.setLinearVelocity(new Vector2(0, -10));
+		}
 	}
 
 	@Override
