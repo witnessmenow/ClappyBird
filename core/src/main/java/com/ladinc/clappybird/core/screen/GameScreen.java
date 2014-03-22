@@ -69,13 +69,15 @@ public class GameScreen implements Screen
     private Texture topPipeTexture;
     private Sprite topPipeSprite ;
     
-    private static List<Pipe> listPipes = new ArrayList<Pipe>();
+    public static List<Pipe> listPipes = new ArrayList<Pipe>();
     
     private float timer;
 
 	private boolean drawPipes;
     
 	private List<Pipe> scoresList = new ArrayList<Pipe>();
+
+	public static boolean gameOver = false;
 
 	private static int score;
 	
@@ -151,7 +153,7 @@ public class GameScreen implements Screen
         //bird seems to operate in a different coordinate system to sprite, need to alter by a factor of PIXELS_PER_METER
         updateSprite(birdSprite, spriteBatch, PIXELS_PER_METER, bird.body);
              
-        drawPipesAtIntervals();
+        if(!gameOver)drawPipesAtIntervals();
         
         //draw pipe image over pipe objects
 		for(Pipe p : listPipes)
@@ -167,20 +169,40 @@ public class GameScreen implements Screen
 				
 		spriteBatch.end();
 
-		for(Pipe p : listPipes)
-		{
-			//remove btm and top pipes if they have moved off the screen
-			if(scoresList.contains(p) && p.getBtmPos().x<-10){
-				world.destroyBody(p.btmPipe);
-				world.destroyBody(p.topPipe);
-			}
-			
-			//p.body.getPosition().x = p.body.getPosition().x - 1;
-			p.btmPipe.setLinearVelocity(new Vector2(-10, 0));
-			p.topPipe.setLinearVelocity(new Vector2(-10, 0));
-		}
+		//remove bottom and top pipes if they have moved off the screen
+		removeUnseenPipes();
 		
+		if(!gameOver){
+			for(Pipe p : listPipes){
+				p.btmPipe.setLinearVelocity(new Vector2(-10, 0));
+				p.topPipe.setLinearVelocity(new Vector2(-10, 0));
+			}
+		}
+			
         //debugRenderer.render(world, camera.combined.scale(PIXELS_PER_METER,PIXELS_PER_METER,PIXELS_PER_METER));
+	}
+
+	private void removeUnseenPipes() {
+		for(int i =0; i < listPipes.size(); i++ ){
+			Pipe pipe = listPipes.get(i);
+			
+			if(scoresList.contains(pipe) && pipe.getBtmPos().x<-10){
+				world.destroyBody(pipe.btmPipe);
+				pipe.btmPipe = null;
+				world.destroyBody(pipe.topPipe);
+				pipe.topPipe = null;
+
+				listPipes.remove(pipe);
+				scoresList.remove(pipe);
+				
+			}
+		}
+	}
+
+	//Show the user's score and any medals etc
+	private void showGameOverScreen() {
+		
+		
 	}
 
 	private void calculateAndDisplayScore() {

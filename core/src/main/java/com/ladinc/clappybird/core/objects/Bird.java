@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.ladinc.clappybird.core.screen.GameScreen;
 
 public class Bird {
 	
@@ -42,7 +43,7 @@ public class Bird {
 	public void jump()
 	{
 		//need to convert short[] to byte[] for isClap
-		if(Gdx.input.justTouched()){
+		if(Gdx.input.justTouched() && !GameScreen.gameOver){
 			this.body.applyForce(this.body.getWorldVector(new Vector2(0.0f, 100000.0f)), this.body.getWorldCenter(), true );
 		}
 	}
