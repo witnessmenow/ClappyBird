@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -162,22 +163,27 @@ public class GameScreen implements Screen
 		//add sprite for the ground
 		spriteBatch.draw(groundTexture, 0, 0);
 		
-		showScore();
+		calculateAndDisplayScore();
 				
 		spriteBatch.end();
 
 		for(Pipe p : listPipes)
 		{
+			//remove btm and top pipes if they have moved off the screen
+			if(scoresList.contains(p) && p.getBtmPos().x<-10){
+				world.destroyBody(p.btmPipe);
+				world.destroyBody(p.topPipe);
+			}
+			
 			//p.body.getPosition().x = p.body.getPosition().x - 1;
 			p.btmPipe.setLinearVelocity(new Vector2(-10, 0));
 			p.topPipe.setLinearVelocity(new Vector2(-10, 0));
 		}
 		
         //debugRenderer.render(world, camera.combined.scale(PIXELS_PER_METER,PIXELS_PER_METER,PIXELS_PER_METER));
-        
 	}
 
-	private void showScore() {
+	private void calculateAndDisplayScore() {
 		for(Pipe p: listPipes){
 			if(!scoresList.contains(p))
 			{	
