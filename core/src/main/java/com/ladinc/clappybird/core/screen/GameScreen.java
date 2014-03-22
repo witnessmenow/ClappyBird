@@ -49,7 +49,7 @@ public class GameScreen implements Screen
     private float worldHeight;
     private static int PIXELS_PER_METER = 10;
     
-    private Vector2 center;
+    public static Vector2 center;
     
     private static Bird bird;
     
@@ -60,8 +60,11 @@ public class GameScreen implements Screen
 	private Texture birdTexture;
     private Sprite birdSprite ;
     
-    private Texture pipeTexture;
-    private Sprite pipeSprite ;
+    private Texture btmPipeTexture;
+    private Sprite btmPipeSprite ;
+    
+    private Texture topPipeTexture;
+    private Sprite topPipeSprite ;
     
     private static List<Pipe> listPipes = new ArrayList<Pipe>();
     
@@ -82,7 +85,7 @@ public class GameScreen implements Screen
     	backgroundTexture = new Texture(Gdx.files.internal("../../clappybird/assets/background.png"));
     	spriteBatch = new SpriteBatch();    
 
-    	this.center = new Vector2(worldWidth / 2, worldHeight / 2);
+    	center = new Vector2(worldWidth / 2, worldHeight / 2);
     	
     	this.camera = new OrthographicCamera();
         this.camera.setToOrtho(false, this.screenWidth, this.screenHeight);
@@ -124,15 +127,18 @@ public class GameScreen implements Screen
         birdTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"birdMid.png"));
 		birdSprite = new Sprite(birdTexture);
 		
-		pipeTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"pipeUp.png"));
-		pipeSprite = new Sprite(pipeTexture);
+		btmPipeTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"pipeUp.png"));
+		btmPipeSprite = new Sprite(btmPipeTexture);
+		
+		topPipeTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"pipeDown.png"));
+		topPipeSprite = new Sprite(topPipeTexture);
 		
 		spriteBatch.begin();
         
         //set up background image
         spriteBatch.draw(backgroundTexture, 0, 0);
         	
-        drawPipeEachSecond();
+        drawPipesAtIntervals();
 
         //bird seems to operate in a different coordinate system to sprite, need to alter by a factor of PIXELS_PER_METER
         updateSprite(birdSprite, spriteBatch, PIXELS_PER_METER, bird.body);
@@ -140,7 +146,8 @@ public class GameScreen implements Screen
         //draw pipe image over pipe objects
 		for(Pipe p : listPipes)
 		{
-			updateSprite(pipeSprite, spriteBatch, PIXELS_PER_METER, p.body);
+			updateSprite(btmPipeSprite, spriteBatch, PIXELS_PER_METER, p.btmPipe);
+			updateSprite(topPipeSprite, spriteBatch, PIXELS_PER_METER, p.topPipe);
 		}
 		 
 		spriteBatch.end();
@@ -148,23 +155,25 @@ public class GameScreen implements Screen
 		for(Pipe p : listPipes)
 		{
 			//p.body.getPosition().x = p.body.getPosition().x - 1;
-			p.body.setLinearVelocity(new Vector2(-10, 0));
+			p.btmPipe.setLinearVelocity(new Vector2(-10, 0));
+			p.topPipe.setLinearVelocity(new Vector2(-10, 0));
 		}
 		
         debugRenderer.render(world, camera.combined.scale(PIXELS_PER_METER,PIXELS_PER_METER,PIXELS_PER_METER));
 	}
 
-	private void drawPipeEachSecond() {
-		if(drawPipes && timer>=1){
+	private void drawPipesAtIntervals() {
+		if(drawPipes && timer>=2){
         	timer = 0f;
         	
         	Random rand = new Random();
         	
-        	// nextInt is normally exclusive of the top value,
-        	// so add 1 to make it inclusive
-        	int randomNum = rand.nextInt((20 - 1) + 1) + 1;
-        	
-        	listPipes.add(new Pipe(world, new Vector2(center.x+30, randomNum)));
+        	// Want a random position for the gap to be places, between 2 and 10. 
+        	// Each unit represents 5 units on the scale of the screen
+        	int low = 4; //minimum position for gap
+        	int high = 7; // max position for gap
+        	int randomNum = rand.nextInt(high - low) + low;
+        	listPipes.add(new Pipe(world, randomNum));
 		}
 	}
 	
@@ -179,7 +188,7 @@ public class GameScreen implements Screen
 	{
 		world = new World(new Vector2(0f, -80.0f), true);
 		
-		bird = new Bird(world, this.center);
+		bird = new Bird(world, center);
 		
 		//draw ground line
 		setUpGround();
@@ -198,16 +207,12 @@ public class GameScreen implements Screen
 	    groundBodyDef.type = BodyType.StaticBody;
 
 		// Create our line
-		// Create a body from the defintion and add it to the world
+		// Create a body from the definition and add it to the world
         Body groundBody = world.createBody(groundBodyDef);
         EdgeShape ground = new EdgeShape();
         ground.set(0, 0, screenWidth, 0);
         groundBody.createFixture(ground, 0.0f);
         ground.dispose();
-	}
-
-	private void setBird(Bird bird) {
-		GameScreen.bird = bird;
 	}
 
 	@Override
