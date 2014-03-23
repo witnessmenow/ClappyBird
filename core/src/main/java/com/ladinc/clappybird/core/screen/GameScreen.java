@@ -158,8 +158,11 @@ public class GameScreen implements Screen
 	}
 
 	private void updateTimerValueAndSetDrawPipes(float delta) {
-		if(demoOver)timer = timer + delta;
-        
+		timer = timer + delta;
+		if(!demoOver && timer > 0.25){
+			timer = 0;
+		}
+		
         //used for intro sequence, no pipes for 5 secs
         if(timer > 5)drawPipes = true;
 	}
@@ -178,23 +181,28 @@ public class GameScreen implements Screen
 		birdUpTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"birdUp.png"));
 		birdDownTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"birdDown.png"));
 		
-		//state machine for moving the birds wings
-		if(bird.getWingPosition() == WingPosition.MIDDLEDOWN){
-			birdSprite = new Sprite(birdDownTexture);
-			bird.setWingPosition(WingPosition.DOWN);
+		//every 0.5 seconds change the wing position
+		if((timer%0.25)<=0.03){
+			//state machine for moving the birds wings
+			if(bird.getWingPosition() == WingPosition.MIDDLEDOWN){
+				birdSprite = new Sprite(birdDownTexture);
+				bird.setWingPosition(WingPosition.DOWN);
+			}
+			else if(bird.getWingPosition() == WingPosition.DOWN){
+				birdSprite = new Sprite(birdMidTexture);
+				bird.setWingPosition(WingPosition.MIDDLEUP);
+			}
+			else if(bird.getWingPosition() == WingPosition.MIDDLEUP){
+				birdSprite = new Sprite(birdUpTexture);
+				bird.setWingPosition(WingPosition.UP);
+			}
+			else if(bird.getWingPosition() == WingPosition.UP){
+				birdSprite = new Sprite(birdMidTexture);
+				bird.setWingPosition(WingPosition.MIDDLEDOWN);
+			}
 		}
-		else if(bird.getWingPosition() == WingPosition.DOWN){
-			birdSprite = new Sprite(birdMidTexture);
-			bird.setWingPosition(WingPosition.MIDDLEUP);
-		}
-		else if(bird.getWingPosition() == WingPosition.MIDDLEUP){
-			birdSprite = new Sprite(birdUpTexture);
-			bird.setWingPosition(WingPosition.UP);
-		}
-		else if(bird.getWingPosition() == WingPosition.UP){
-			birdSprite = new Sprite(birdMidTexture);
-			bird.setWingPosition(WingPosition.MIDDLEDOWN);
-		}
+		
+		//birdSprite = new Sprite(birdDownTexture);
 		
 		btmPipeTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"pipeUp.png"));
 		btmPipeSprite = new Sprite(btmPipeTexture);
