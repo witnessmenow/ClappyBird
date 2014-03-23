@@ -42,14 +42,14 @@ public class Bird {
 	
 	public void checkForJump()
 	{
-		if(GameScreen.demoOver){
 			//need to convert short[] to byte[] for isClap
-			if(Gdx.input.justTouched() && !GameScreen.gameOver){
+		if(Gdx.input.justTouched()){
+			if(GameScreen.demoOver){
 				this.body.applyForce(this.body.getWorldVector(new Vector2(0.0f, 100000.0f)), this.body.getWorldCenter(), true );
 			}
+			GameScreen.demoOver = true;
 		}
 		
-		GameScreen.demoOver = true;
 	}
 	
 	public Vector2 getPos(){

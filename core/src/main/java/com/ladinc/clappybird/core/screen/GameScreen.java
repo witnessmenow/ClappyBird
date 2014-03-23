@@ -13,12 +13,11 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
+import com.badlogic.gdx.physics.box2d.MassData;
 import com.badlogic.gdx.physics.box2d.World;
 import com.ladinc.clappybird.core.AudioThread;
 import com.ladinc.clappybird.core.ClappyBird;
@@ -124,20 +123,52 @@ public class GameScreen implements Screen
 	public void render(float delta) {
 
 		bird.checkForJump();
+
+		floatyDemoBird();
 		
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT); 
-		camera.update();
-		
-        world.step(1.0f/60.0f, 10, 10);
+		camera.update();	
+        world.step(1.0f/60.0f, 10, 10);  
         
-        if(demoOver){
+        updateTimerValueAndSetDrawPipes(delta);
         
-        timer = timer + delta;
+        drawTextures();
+        setPipesMoving();
+
+		//remove bottom and top pipes if they have moved off the screen
+		removeUnseenPipes();
+        
+        
+        //debugRenderer.render(world, camera.combined.scale(PIXELS_PER_METER,PIXELS_PER_METER,PIXELS_PER_METER));
+	}
+
+	private void floatyDemoBird() {
+		//demo to the user, tap icon and floating bird displayed
+		if(!demoOver){
+			if(bird.getPos().y < (center.y-1)){
+				bird.body.applyForce(bird.body.getWorldVector(new Vector2(0.0f, 7000.0f)), bird.body.getWorldCenter(), true );
+			}	
+		}	
+	}
+
+	private void updateTimerValueAndSetDrawPipes(float delta) {
+		if(demoOver)timer = timer + delta;
         
         //used for intro sequence, no pipes for 5 secs
         if(timer > 5)drawPipes = true;
-        
-        birdTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"birdMid.png"));
+	}
+
+	private void setPipesMoving() {
+		if(!gameOver){
+			for(Pipe p : listPipes){
+				p.btmPipe.setLinearVelocity(new Vector2(-10, 0));
+				p.topPipe.setLinearVelocity(new Vector2(-10, 0));
+			}
+		}
+	}
+
+	private void drawTextures() {
+		birdTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"birdMid.png"));
 		birdSprite = new Sprite(birdTexture);
 		
 		btmPipeTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"pipeUp.png"));
@@ -157,7 +188,7 @@ public class GameScreen implements Screen
         //bird seems to operate in a different coordinate system to sprite, need to alter by a factor of PIXELS_PER_METER
         updateSprite(birdSprite, spriteBatch, PIXELS_PER_METER, bird.body);
              
-        if(!gameOver)drawPipesAtIntervals();
+        if(!gameOver && demoOver)drawPipesAtIntervals();
         
         //draw pipe image over pipe objects
 		for(Pipe p : listPipes)
@@ -172,22 +203,6 @@ public class GameScreen implements Screen
 		calculateAndDisplayScore();
 				
 		spriteBatch.end();
-
-		//remove bottom and top pipes if they have moved off the screen
-		removeUnseenPipes();
-		
-		if(!gameOver){
-			for(Pipe p : listPipes){
-				p.btmPipe.setLinearVelocity(new Vector2(-10, 0));
-				p.topPipe.setLinearVelocity(new Vector2(-10, 0));
-			}
-		}
-        }
-        else{
-        	//demo to the user, tap icon and floating bird displayed
-        	
-        }
-        //debugRenderer.render(world, camera.combined.scale(PIXELS_PER_METER,PIXELS_PER_METER,PIXELS_PER_METER));
 	}
 
 	private void removeUnseenPipes() {
