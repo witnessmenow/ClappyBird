@@ -16,6 +16,7 @@ public class Bird {
 	public static float HEIGHT = 2;
 	
 	public Body body;
+	private WingPosition wingPosition;
 	
 	public Bird(World world, Vector2 position)
 	{		
@@ -50,6 +51,16 @@ public class Bird {
 			GameScreen.demoOver = true;
 		}
 		
+	}
+	
+	public static enum WingPosition{UP, MIDDLEDOWN, MIDDLEUP, DOWN};
+	
+	public void setWingPosition(WingPosition pos){
+		this.wingPosition = pos;
+	}
+	
+	public WingPosition getWingPosition(){
+		return this.wingPosition;
 	}
 	
 	public Vector2 getPos(){

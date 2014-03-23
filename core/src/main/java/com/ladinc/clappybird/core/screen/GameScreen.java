@@ -23,6 +23,7 @@ import com.ladinc.clappybird.core.AudioThread;
 import com.ladinc.clappybird.core.ClappyBird;
 import com.ladinc.clappybird.core.collision.CollisionHelper;
 import com.ladinc.clappybird.core.objects.Bird;
+import com.ladinc.clappybird.core.objects.Bird.WingPosition;
 import com.ladinc.clappybird.core.objects.Pipe;
 
 public class GameScreen implements Screen 
@@ -53,7 +54,7 @@ public class GameScreen implements Screen
     
     private AudioThread audioThread;
 
-	private Texture birdTexture;
+	private Texture birdMidTexture;
     private Sprite birdSprite ;
     
     private Texture btmPipeTexture;
@@ -77,6 +78,10 @@ public class GameScreen implements Screen
 	private List<Pipe> scoresList = new ArrayList<Pipe>();
 
 	private Texture demoTexture;
+
+	private Texture birdUpTexture;
+
+	private Texture birdDownTexture;
 
 	public static boolean gameOver = false;
 
@@ -169,8 +174,27 @@ public class GameScreen implements Screen
 	}
 
 	private void drawTextures() {
-		birdTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"birdMid.png"));
-		birdSprite = new Sprite(birdTexture);
+		birdMidTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"birdMid.png"));
+		birdUpTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"birdUp.png"));
+		birdDownTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"birdDown.png"));
+		
+		//state machine for moving the birds wings
+		if(bird.getWingPosition() == WingPosition.MIDDLEDOWN){
+			birdSprite = new Sprite(birdDownTexture);
+			bird.setWingPosition(WingPosition.DOWN);
+		}
+		else if(bird.getWingPosition() == WingPosition.DOWN){
+			birdSprite = new Sprite(birdMidTexture);
+			bird.setWingPosition(WingPosition.MIDDLEUP);
+		}
+		else if(bird.getWingPosition() == WingPosition.MIDDLEUP){
+			birdSprite = new Sprite(birdUpTexture);
+			bird.setWingPosition(WingPosition.UP);
+		}
+		else if(bird.getWingPosition() == WingPosition.UP){
+			birdSprite = new Sprite(birdMidTexture);
+			bird.setWingPosition(WingPosition.MIDDLEDOWN);
+		}
 		
 		btmPipeTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"pipeUp.png"));
 		btmPipeSprite = new Sprite(btmPipeTexture);
@@ -212,7 +236,7 @@ public class GameScreen implements Screen
 	}
 
 	private void removeUnseenPipes() {
-		for(int i =0; i < listPipes.size(); i++ ){
+		for(int i =0; i < listPipes.size(); i++){
 			Pipe pipe = listPipes.get(i);
 			
 			if(pipe.getBtmPos().x<-10){
@@ -237,7 +261,7 @@ public class GameScreen implements Screen
 		for(Pipe p: listPipes){
 			if(!scoresList.contains(p))
 			{	
-				if(p.getBtmPos().x < center.x){
+				if(p.getBtmPos().x < center.x - 5){
 					scoresList.add(p);
 					//keep a unique list of the pipes that have passed the centre x point.
 					//Only add them to the list if they have newly passed this point
@@ -299,6 +323,7 @@ public class GameScreen implements Screen
 		world = new World(new Vector2(0f, -80.0f), true);
 		Vector2 birdPos = new Vector2(center.x - 5, center.y);
 		bird = new Bird(world, birdPos);
+		bird.setWingPosition(WingPosition.MIDDLEDOWN);
 		
 		//draw ground line
 		setUpGround();
