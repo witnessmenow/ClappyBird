@@ -76,6 +76,8 @@ public class GameScreen implements Screen
     
 	private List<Pipe> scoresList = new ArrayList<Pipe>();
 
+	private Texture demoTexture;
+
 	public static boolean gameOver = false;
 
 	private static int score;
@@ -124,7 +126,8 @@ public class GameScreen implements Screen
 
 		bird.checkForJump();
 
-		floatyDemoBird();
+		//In demo mode, the bird floats and there is an image indicating to the user to tap the screen
+		if(!demoOver)floatyDemoBird();
 		
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT); 
 		camera.update();	
@@ -143,12 +146,10 @@ public class GameScreen implements Screen
 	}
 
 	private void floatyDemoBird() {
-		//demo to the user, tap icon and floating bird displayed
-		if(!demoOver){
-			if(bird.getPos().y < (center.y-1)){
-				bird.body.applyForce(bird.body.getWorldVector(new Vector2(0.0f, 7000.0f)), bird.body.getWorldCenter(), true );
-			}	
-		}	
+        
+		if(bird.getPos().y < (center.y-1)){
+			bird.body.applyForce(bird.body.getWorldVector(new Vector2(0.0f, 7000.0f)), bird.body.getWorldCenter(), true );
+		}		
 	}
 
 	private void updateTimerValueAndSetDrawPipes(float delta) {
@@ -179,6 +180,9 @@ public class GameScreen implements Screen
 		
 		groundTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"ground.png"));
 		
+		//demo to the user, tap icon and floating bird displayed
+		demoTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"demo.png"));
+		
 		spriteBatch.begin();
         
         //set up background image
@@ -199,6 +203,8 @@ public class GameScreen implements Screen
 		 
 		//add sprite for the ground
 		spriteBatch.draw(groundTexture, 0, 0);
+		
+		if(!demoOver)spriteBatch.draw(demoTexture, 250, 320);
 		
 		calculateAndDisplayScore();
 				
@@ -291,8 +297,8 @@ public class GameScreen implements Screen
 	public void show() 
 	{
 		world = new World(new Vector2(0f, -80.0f), true);
-		
-		bird = new Bird(world, center);
+		Vector2 birdPos = new Vector2(center.x - 5, center.y);
+		bird = new Bird(world, birdPos);
 		
 		//draw ground line
 		setUpGround();
