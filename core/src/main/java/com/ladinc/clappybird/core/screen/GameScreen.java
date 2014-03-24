@@ -1,7 +1,9 @@
 package com.ladinc.clappybird.core.screen;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
@@ -17,7 +19,6 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
-import com.badlogic.gdx.physics.box2d.MassData;
 import com.badlogic.gdx.physics.box2d.World;
 import com.ladinc.clappybird.core.AudioThread;
 import com.ladinc.clappybird.core.ClappyBird;
@@ -28,7 +29,23 @@ import com.ladinc.clappybird.core.objects.Pipe;
 
 public class GameScreen implements Screen 
 {
+	private static final String DEMO = "DEMO";
+
+	private static final String GROUND = "GROUND";
+
+	private static final String TOP_PIPE = "TOP_PIPE";
+
+	private static final String BTM_PIPE = "BTM_PIPE";
+
+	private static final String BIRD_UP = "BIRD_UP";
+
+	private static final String BIRD_MID = "BIRD_MID";
+
+	private static final String BIRD_DOWN = "BIRD_DOWN";
+
 	private static final String ASSETS_DIR = "../../clappybird/assets/";
+
+	private static final String BACKGROUND = "BACKGROUND";
 	
 	private OrthographicCamera camera;
     private static SpriteBatch spriteBatch;
@@ -89,6 +106,8 @@ public class GameScreen implements Screen
 	
 	public static boolean demoOver = false;
 	
+	public static Map<String, Texture> textureMap = new HashMap<String, Texture>();
+	
 	public GameScreen(ClappyBird gs)
 	{		
     	this.screenWidth = 480;
@@ -97,7 +116,6 @@ public class GameScreen implements Screen
     	this.worldHeight = this.screenHeight / PIXELS_PER_METER;
     	this.worldWidth = this.screenWidth / PIXELS_PER_METER;
     	
-    	backgroundTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"background.png"));
     	spriteBatch = new SpriteBatch();    
 
     	center = new Vector2(worldWidth / 2, worldHeight / 2);
@@ -106,8 +124,40 @@ public class GameScreen implements Screen
         this.camera.setToOrtho(false, this.screenWidth, this.screenHeight);
         //debugRenderer = new Box2DDebugRenderer();
         
+        setUpTextureMap();
+        
 	}
 	
+	private void setUpTextureMap() {
+		birdMidTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"birdMid.png"));
+		birdUpTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"birdUp.png"));
+		birdDownTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"birdDown.png"));
+		
+		btmPipeTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"pipeUp.png"));
+		topPipeTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"pipeDown.png"));
+		
+		groundTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"ground.png"));
+		
+		backgroundTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"background.png"));
+		
+		//demo to the user, tap icon and floating bird displayed
+		demoTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"demo.png"));
+		
+		textureMap.put(BIRD_DOWN, birdDownTexture);
+		textureMap.put(BIRD_MID, birdMidTexture);
+		textureMap.put(BIRD_UP, birdUpTexture);
+		
+		textureMap.put(BTM_PIPE, btmPipeTexture);
+		textureMap.put(TOP_PIPE, topPipeTexture);
+		
+		textureMap.put(GROUND, groundTexture);
+		
+		textureMap.put(BACKGROUND, backgroundTexture);
+		
+		textureMap.put(DEMO, demoTexture);
+		
+	}
+
 	public static void updateSprite(Sprite sprite, SpriteBatch spriteBatch, int PIXELS_PER_METER, Body body)
     {
         if(sprite != null && spriteBatch != null && body != null)
@@ -123,14 +173,29 @@ public class GameScreen implements Screen
         
         sprite.setPosition(PIXELS_PER_METER * body.getPosition().x - sprite.getWidth()/2,
                         PIXELS_PER_METER * body.getPosition().y  - sprite.getHeight()/2);
-        sprite.setRotation((MathUtils.radiansToDegrees * body.getAngle()));
+        
+        if(bird.body == body && !gameOver && demoOver){
+        	if(body.getLinearVelocity().y > 0){
+        		sprite.setRotation((45f));
+        	}
+        	else{
+        		//get the square of the velocity in the y-direction to work out the rotation of the bird
+        		float rotation = 45 - (2f*(Math.abs(body.getLinearVelocity().y)));
+        		if(rotation<-90)rotation = -90;
+        		
+        		sprite.setRotation(rotation);
+        	}
+        }
+    	else{
+        	sprite.setRotation((MathUtils.radiansToDegrees * body.getAngle()));
+        }
     }
 	
 	@Override
 	public void render(float delta) {
 
 		bird.checkForJump();
-
+	
 		//In demo mode, the bird floats and there is an image indicating to the user to tap the screen
 		if(!demoOver)floatyDemoBird();
 		
@@ -177,48 +242,36 @@ public class GameScreen implements Screen
 	}
 
 	private void drawTextures() {
-		birdMidTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"birdMid.png"));
-		birdUpTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"birdUp.png"));
-		birdDownTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"birdDown.png"));
 		
 		//every 0.5 seconds change the wing position
-		if((timer%0.25)<=0.03){
+		if((timer%0.25)<=0.03 && !gameOver){
 			//state machine for moving the birds wings
 			if(bird.getWingPosition() == WingPosition.MIDDLEDOWN){
-				birdSprite = new Sprite(birdDownTexture);
+				birdSprite = new Sprite(textureMap.get(BIRD_DOWN));
 				bird.setWingPosition(WingPosition.DOWN);
 			}
 			else if(bird.getWingPosition() == WingPosition.DOWN){
-				birdSprite = new Sprite(birdMidTexture);
+				birdSprite = new Sprite(textureMap.get(BIRD_MID));
 				bird.setWingPosition(WingPosition.MIDDLEUP);
 			}
 			else if(bird.getWingPosition() == WingPosition.MIDDLEUP){
-				birdSprite = new Sprite(birdUpTexture);
+				birdSprite = new Sprite(textureMap.get(BIRD_UP));
 				bird.setWingPosition(WingPosition.UP);
 			}
 			else if(bird.getWingPosition() == WingPosition.UP){
-				birdSprite = new Sprite(birdMidTexture);
+				birdSprite = new Sprite(textureMap.get(BIRD_MID));
 				bird.setWingPosition(WingPosition.MIDDLEDOWN);
 			}
 		}
 		
 		//birdSprite = new Sprite(birdDownTexture);
-		
-		btmPipeTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"pipeUp.png"));
-		btmPipeSprite = new Sprite(btmPipeTexture);
-		
-		topPipeTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"pipeDown.png"));
-		topPipeSprite = new Sprite(topPipeTexture);
-		
-		groundTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"ground.png"));
-		
-		//demo to the user, tap icon and floating bird displayed
-		demoTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"demo.png"));
+		btmPipeSprite = new Sprite(textureMap.get(BTM_PIPE));
+		topPipeSprite = new Sprite(textureMap.get(TOP_PIPE));
 		
 		spriteBatch.begin();
         
         //set up background image
-        spriteBatch.draw(backgroundTexture, 0, 0);
+        spriteBatch.draw(textureMap.get(BACKGROUND), 0, 0);
         	
         
         //bird seems to operate in a different coordinate system to sprite, need to alter by a factor of PIXELS_PER_METER
@@ -234,9 +287,9 @@ public class GameScreen implements Screen
 		}
 		 
 		//add sprite for the ground
-		spriteBatch.draw(groundTexture, 0, 0);
+		spriteBatch.draw(textureMap.get(GROUND), 0, 0);
 		
-		if(!demoOver)spriteBatch.draw(demoTexture, 250, 320);
+		if(!demoOver)spriteBatch.draw(textureMap.get(DEMO), 250, 320);
 		
 		calculateAndDisplayScore();
 				
@@ -257,12 +310,6 @@ public class GameScreen implements Screen
 				scoresList.remove(pipe);	
 			}
 		}
-	}
-
-	//Show the user's score and any medals etc
-	private void showGameOverScreen() {
-		
-		
 	}
 
 	private void calculateAndDisplayScore() {
