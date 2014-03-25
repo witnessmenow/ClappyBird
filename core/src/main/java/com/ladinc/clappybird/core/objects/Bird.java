@@ -46,7 +46,7 @@ public class Bird {
 			//need to convert short[] to byte[] for isClap
 		if(Gdx.input.justTouched()){
 			if(GameScreen.demoOver && !GameScreen.gameOver){
-				this.body.applyForce(this.body.getWorldVector(new Vector2(0.0f, 110000.0f)), this.body.getWorldCenter() , true );
+				this.body.applyForce(this.body.getWorldVector(new Vector2(0.0f, 190000.0f)), this.body.getWorldCenter() , true );
 			}
 			GameScreen.demoOver = true;
 		}

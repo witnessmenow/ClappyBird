@@ -1,5 +1,7 @@
 package com.ladinc.clappybird.core.collision;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
@@ -19,19 +21,34 @@ public class CollisionHelper implements ContactListener{
 	public void beginContact(Contact contact) 
 	{		
 		//boolean used to disable pipe and bird movement and show the game over screen
-		if(GameScreen.demoOver){
+		if(GameScreen.demoOver && !GameScreen.gameOver){
 			GameScreen.gameOver = true;  
 		
-		//stop the pipes from moving on game over
-		for(Pipe p : GameScreen.listPipes){
-			p.btmPipe.setLinearVelocity(new Vector2(0, 0));
-			p.topPipe.setLinearVelocity(new Vector2(0, 0));
+			//stop the pipes from moving on game over
+			for(Pipe p : GameScreen.listPipes){
+				p.btmPipe.setLinearVelocity(new Vector2(0, 0));
+				p.topPipe.setLinearVelocity(new Vector2(0, 0));
+	
+			}
+			
+			//if the bird hits a pipe we want it fall vertically down, not bounce off the pipe backwards
+			GameScreen.getBird().body.setLinearVelocity(new Vector2(0, -10));
+			
+			saveScore();
+		}
+	}
 
+	private void saveScore() {
+		FileHandle file = Gdx.files.local("highscore.txt");
+		
+		String currHigscore = file.readString();
+		int highScr = Integer.parseInt(currHigscore);
+		
+		if(GameScreen.score>highScr){
+			//overwrite the previous highscore if score is higher than value in the file
+			file.writeString(""+GameScreen.score, false);
 		}
 		
-		//if the bird hits a pipe we want it fall vertically down, not bounce off the pipe backwards
-		GameScreen.getBird().body.setLinearVelocity(new Vector2(0, -10));
-		}
 	}
 
 	@Override

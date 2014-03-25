@@ -102,7 +102,7 @@ public class GameScreen implements Screen
 
 	public static boolean gameOver = false;
 
-	private static int score;
+	public static int score;
 	
 	public static boolean demoOver = false;
 	

@@ -35,7 +35,7 @@ public class Pipe {
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.KinematicBody;
 		
-		pipePosition.y = (12+gapPos)*5;
+		pipePosition.y = (12.5f+gapPos)*5;
 		bodyDef.position.set(pipePosition);
 		bodyDef.angle = 0;
 		bodyDef.fixedRotation = true;
