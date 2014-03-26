@@ -42,9 +42,9 @@ public class CollisionHelper implements ContactListener{
 		FileHandle file = Gdx.files.local("highscore.txt");
 		
 		String currHigscore = file.readString();
-		int highScr = Integer.parseInt(currHigscore);
+		GameScreen.highScr = Integer.parseInt(currHigscore);
 		
-		if(GameScreen.score>highScr){
+		if(GameScreen.score>GameScreen.highScr){
 			//overwrite the previous highscore if score is higher than value in the file
 			file.writeString(""+GameScreen.score, false);
 		}

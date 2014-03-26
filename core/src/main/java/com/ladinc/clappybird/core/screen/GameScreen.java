@@ -100,6 +100,14 @@ public class GameScreen implements Screen
 
 	private Texture birdDownTexture;
 
+	private Texture scoreBoardTexture;
+
+	private Texture highScrTextr1;
+
+	private Texture highScrTextr2;
+
+	private Texture highScrTextr3;
+
 	public static boolean gameOver = false;
 
 	public static int score;
@@ -107,6 +115,8 @@ public class GameScreen implements Screen
 	public static boolean demoOver = false;
 	
 	public static Map<String, Texture> textureMap = new HashMap<String, Texture>();
+
+	public static int highScr;
 	
 	public GameScreen(ClappyBird gs)
 	{		
@@ -215,6 +225,39 @@ public class GameScreen implements Screen
         //debugRenderer.render(world, camera.combined.scale(PIXELS_PER_METER,PIXELS_PER_METER,PIXELS_PER_METER));
 	}
 
+	private void showScoreAndHighScore() {
+		scoreBoardTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"scoreScreen.png"));
+		spriteBatch.draw(scoreBoardTexture, 150, 350);
+		
+		String highScoreStr = ""+highScr;
+		char[] highScoreArr = highScoreStr.toCharArray();
+		
+		if(highScr<10){
+			highScrTextr1 = new Texture(Gdx.files.internal(ASSETS_DIR+highScoreArr[0]+".png"));
+			highScrTextr2 = new Texture(Gdx.files.internal(ASSETS_DIR+"blank"+".png"));
+			highScrTextr3 = new Texture(Gdx.files.internal(ASSETS_DIR+"blank"+".png"));
+		}
+		else if(highScr<100){
+			highScrTextr1 = new Texture(Gdx.files.internal(ASSETS_DIR+highScoreArr[0]+".png"));
+			highScrTextr2 = new Texture(Gdx.files.internal(ASSETS_DIR+highScoreArr[1]+".png"));
+			highScrTextr3 = new Texture(Gdx.files.internal(ASSETS_DIR+"blank"+".png"));
+		}
+		else if(highScr < 1000){
+			highScrTextr1 = new Texture(Gdx.files.internal(ASSETS_DIR+highScoreArr[0]+".png"));
+			highScrTextr2 = new Texture(Gdx.files.internal(ASSETS_DIR+highScoreArr[1]+".png"));
+			highScrTextr3 = new Texture(Gdx.files.internal(ASSETS_DIR+highScoreArr[2]+".png"));
+		}
+		
+		spriteBatch.draw(highScrTextr1, 315, 370);
+		spriteBatch.draw(highScrTextr2, 320, 370);
+		spriteBatch.draw(highScrTextr3, 325, 370);
+		
+		spriteBatch.draw(scoreTexture1, 315, 415);
+		spriteBatch.draw(scoreTexture2, 320, 415);
+		spriteBatch.draw(scoreTexture3, 325, 415);
+		
+	}
+
 	private void floatyDemoBird() {
         
 		if(bird.getPos().y < (center.y-1)){
@@ -293,6 +336,8 @@ public class GameScreen implements Screen
 		
 		calculateAndDisplayScore();
 				
+		if(gameOver)showScoreAndHighScore();
+		
 		spriteBatch.end();
 	}
 
