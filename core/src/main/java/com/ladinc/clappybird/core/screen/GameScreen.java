@@ -256,6 +256,28 @@ public class GameScreen implements Screen
 		spriteBatch.draw(scoreTexture2, 320, 415);
 		spriteBatch.draw(scoreTexture3, 325, 415);
 		
+		
+		drawMedal();
+	}
+
+	private void drawMedal() {
+		Texture medalTexture = null;
+		if(score<10){
+			medalTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"blank"+".png"));
+		}
+		if(score>=10 && score<20){
+			medalTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"bronzeMedal"+".png"));
+		}
+		else if(score>=20 && score<30){
+			medalTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"silverMedal"+".png"));
+		}
+		else if(score>=30 && score<40){
+			medalTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"goldMedal"+".png"));
+		}
+		else if(score>=40){
+			medalTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"platMedal"+".png"));
+		}
+		spriteBatch.draw(medalTexture, 175, 380);
 	}
 
 	private void floatyDemoBird() {
