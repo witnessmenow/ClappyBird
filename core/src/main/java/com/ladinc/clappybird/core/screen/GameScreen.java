@@ -18,6 +18,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.ladinc.clappybird.core.AudioThread;
@@ -67,7 +68,7 @@ public class GameScreen implements Screen
     
     private static Bird bird;
     
-    //private Box2DDebugRenderer debugRenderer;
+    private Box2DDebugRenderer debugRenderer;
     
     private AudioThread audioThread;
 
@@ -132,7 +133,7 @@ public class GameScreen implements Screen
     	
     	this.camera = new OrthographicCamera();
         this.camera.setToOrtho(false, this.screenWidth, this.screenHeight);
-        //debugRenderer = new Box2DDebugRenderer();
+        debugRenderer = new Box2DDebugRenderer();
         
         setUpTextureMap();
         
@@ -222,7 +223,7 @@ public class GameScreen implements Screen
 		removeUnseenPipes();
         
         
-        //debugRenderer.render(world, camera.combined.scale(PIXELS_PER_METER,PIXELS_PER_METER,PIXELS_PER_METER));
+        debugRenderer.render(world, camera.combined.scale(PIXELS_PER_METER,PIXELS_PER_METER,PIXELS_PER_METER));
 	}
 
 	private void showScoreAndHighScore() {
@@ -249,12 +250,12 @@ public class GameScreen implements Screen
 		}
 		
 		spriteBatch.draw(highScrTextr1, 315, 370);
-		spriteBatch.draw(highScrTextr2, 320, 370);
-		spriteBatch.draw(highScrTextr3, 325, 370);
+		spriteBatch.draw(highScrTextr2, 315 + highScrTextr1.getWidth()+ 5, 370);
+		spriteBatch.draw(highScrTextr3, 315 + highScrTextr1.getWidth()*2 + 10, 370);
 		
 		spriteBatch.draw(scoreTexture1, 315, 415);
-		spriteBatch.draw(scoreTexture2, 320, 415);
-		spriteBatch.draw(scoreTexture3, 325, 415);
+		spriteBatch.draw(scoreTexture2, 330, 415);
+		spriteBatch.draw(scoreTexture3, 340, 415);
 		
 		
 		drawMedal();
@@ -358,9 +359,17 @@ public class GameScreen implements Screen
 		
 		calculateAndDisplayScore();
 				
-		if(gameOver)showScoreAndHighScore();
+		if(gameOver){
+			showScoreAndHighScore();
+			showRetryBtn();
+		}
 		
 		spriteBatch.end();
+	}
+
+	private void showRetryBtn() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private void removeUnseenPipes() {
@@ -449,12 +458,28 @@ public class GameScreen implements Screen
 		
 		//draw ground line
 		setUpGround();
+		setUpCeiling();
 		
 		world.setContactListener(new CollisionHelper());
 		
 		//audioThread = new AudioThread(bird);
         //Thread t = new Thread(audioThread);
         //t.start();
+		
+	}
+
+	private void setUpCeiling() {
+		// Create our body definition
+	    BodyDef ceilingBodyDef = new BodyDef();
+	    ceilingBodyDef.type = BodyType.StaticBody;
+	    
+		// Create our line
+		// Create a body from the definition and add it to the world
+        Body ceilingBody = world.createBody(ceilingBodyDef);
+        EdgeShape ceiling = new EdgeShape();
+        ceiling.set(0, 100, screenWidth, 100);
+        ceilingBody.createFixture(ceiling, 0.0f);
+        ceiling.dispose();
 		
 	}
 
