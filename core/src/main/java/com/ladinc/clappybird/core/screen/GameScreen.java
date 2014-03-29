@@ -53,7 +53,7 @@ public class GameScreen implements Screen
 
     private Texture backgroundTexture;
     
-    private World world;
+    public static World world;
     
     //Used for sprites etc
 	private int screenWidth;
@@ -93,7 +93,7 @@ public class GameScreen implements Screen
 
 	private boolean drawPipes;
     
-	private List<Pipe> scoresList = new ArrayList<Pipe>();
+	public static List<Pipe> scoresList = new ArrayList<Pipe>();
 
 	private Texture demoTexture;
 
@@ -108,6 +108,8 @@ public class GameScreen implements Screen
 	private Texture highScrTextr2;
 
 	private Texture highScrTextr3;
+
+	private Texture gameOverTexture;
 
 	public static boolean gameOver = false;
 
@@ -227,6 +229,10 @@ public class GameScreen implements Screen
 	}
 
 	private void showScoreAndHighScore() {
+		gameOverTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"gameOver.png"));
+		spriteBatch.draw(gameOverTexture, 150, 500);
+		
+		
 		scoreBoardTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"scoreScreen.png"));
 		spriteBatch.draw(scoreBoardTexture, 150, 350);
 		

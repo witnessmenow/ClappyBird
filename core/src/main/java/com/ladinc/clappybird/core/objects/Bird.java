@@ -1,5 +1,6 @@
 package com.ladinc.clappybird.core.objects;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -45,12 +46,42 @@ public class Bird {
 	{
 			//need to convert short[] to byte[] for isClap
 		if(Gdx.input.justTouched()){
+			if(!GameScreen.gameOver){
+				GameScreen.demoOver = true;
+			}
+
 			if(GameScreen.demoOver && !GameScreen.gameOver){
 				this.body.applyForce(this.body.getWorldVector(new Vector2(0.0f, 190000.0f)), this.body.getWorldCenter() , true );
 			}
-			GameScreen.demoOver = true;
+			else if(GameScreen.demoOver && GameScreen.gameOver){
+				resetWorld();
+			}
 		}
 		
+	}
+
+	private void resetWorld() {
+		GameScreen.gameOver = false;
+		GameScreen.demoOver = false;
+		
+		for(int i =0; i < GameScreen.listPipes.size(); i++){
+			Pipe pipe = GameScreen.listPipes.get(i);
+			
+			pipe.btmPipe.setLinearVelocity(new Vector2(0, 0));
+			pipe.topPipe.setLinearVelocity(new Vector2(0, 0));
+			
+			GameScreen.world.destroyBody(pipe.btmPipe);
+			pipe.btmPipe = null;
+			GameScreen.world.destroyBody(pipe.topPipe);
+			pipe.topPipe = null;
+
+			GameScreen.listPipes.remove(pipe);
+			GameScreen.scoresList.remove(pipe);	
+		}
+		
+		GameScreen.score = 0;
+		
+		this.body.setTransform(GameScreen.center.x-5, GameScreen.center.y, 0);
 	}
 	
 	public static enum WingPosition{UP, MIDDLEDOWN, MIDDLEUP, DOWN};
