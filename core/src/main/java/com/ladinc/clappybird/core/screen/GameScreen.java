@@ -44,8 +44,6 @@ public class GameScreen implements Screen
 
 	private static final String BIRD_DOWN = "BIRD_DOWN";
 
-	private static final String ASSETS_DIR = "../../clappybird/assets/";
-
 	private static final String BACKGROUND = "BACKGROUND";
 	
 	private OrthographicCamera camera;
@@ -135,26 +133,26 @@ public class GameScreen implements Screen
     	
     	this.camera = new OrthographicCamera();
         this.camera.setToOrtho(false, this.screenWidth, this.screenHeight);
-        debugRenderer = new Box2DDebugRenderer();
+        //debugRenderer = new Box2DDebugRenderer();
         
         setUpTextureMap();
         
 	}
 	
 	private void setUpTextureMap() {
-		birdMidTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"birdMid.png"));
-		birdUpTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"birdUp.png"));
-		birdDownTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"birdDown.png"));
+		birdMidTexture = new Texture(Gdx.files.internal("birdMid.png"));
+		birdUpTexture = new Texture(Gdx.files.internal("birdUp.png"));
+		birdDownTexture = new Texture(Gdx.files.internal("birdDown.png"));
 		
-		btmPipeTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"pipeUp.png"));
-		topPipeTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"pipeDown.png"));
+		btmPipeTexture = new Texture(Gdx.files.internal("pipeUp.png"));
+		topPipeTexture = new Texture(Gdx.files.internal("pipeDown.png"));
 		
-		groundTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"ground.png"));
+		groundTexture = new Texture(Gdx.files.internal("ground.png"));
 		
-		backgroundTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"background.png"));
+		backgroundTexture = new Texture(Gdx.files.internal("background.png"));
 		
 		//demo to the user, tap icon and floating bird displayed
-		demoTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"demo.png"));
+		demoTexture = new Texture(Gdx.files.internal("demo.png"));
 		
 		textureMap.put(BIRD_DOWN, birdDownTexture);
 		textureMap.put(BIRD_MID, birdMidTexture);
@@ -225,34 +223,34 @@ public class GameScreen implements Screen
 		removeUnseenPipes();
         
         
-        debugRenderer.render(world, camera.combined.scale(PIXELS_PER_METER,PIXELS_PER_METER,PIXELS_PER_METER));
+        //debugRenderer.render(world, camera.combined.scale(PIXELS_PER_METER,PIXELS_PER_METER,PIXELS_PER_METER));
 	}
 
 	private void showScoreAndHighScore() {
-		gameOverTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"gameOver.png"));
+		gameOverTexture = new Texture(Gdx.files.internal("gameOver.png"));
 		spriteBatch.draw(gameOverTexture, 150, 500);
 		
 		
-		scoreBoardTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"scoreScreen.png"));
+		scoreBoardTexture = new Texture(Gdx.files.internal("scoreScreen.png"));
 		spriteBatch.draw(scoreBoardTexture, 150, 350);
 		
 		String highScoreStr = ""+highScr;
 		char[] highScoreArr = highScoreStr.toCharArray();
 		
 		if(highScr<10){
-			highScrTextr1 = new Texture(Gdx.files.internal(ASSETS_DIR+highScoreArr[0]+".png"));
-			highScrTextr2 = new Texture(Gdx.files.internal(ASSETS_DIR+"blank"+".png"));
-			highScrTextr3 = new Texture(Gdx.files.internal(ASSETS_DIR+"blank"+".png"));
+			highScrTextr1 = new Texture(Gdx.files.internal(highScoreArr[0]+".png"));
+			highScrTextr2 = new Texture(Gdx.files.internal("blank"+".png"));
+			highScrTextr3 = new Texture(Gdx.files.internal("blank"+".png"));
 		}
 		else if(highScr<100){
-			highScrTextr1 = new Texture(Gdx.files.internal(ASSETS_DIR+highScoreArr[0]+".png"));
-			highScrTextr2 = new Texture(Gdx.files.internal(ASSETS_DIR+highScoreArr[1]+".png"));
-			highScrTextr3 = new Texture(Gdx.files.internal(ASSETS_DIR+"blank"+".png"));
+			highScrTextr1 = new Texture(Gdx.files.internal(highScoreArr[0]+".png"));
+			highScrTextr2 = new Texture(Gdx.files.internal(highScoreArr[1]+".png"));
+			highScrTextr3 = new Texture(Gdx.files.internal("blank"+".png"));
 		}
 		else if(highScr < 1000){
-			highScrTextr1 = new Texture(Gdx.files.internal(ASSETS_DIR+highScoreArr[0]+".png"));
-			highScrTextr2 = new Texture(Gdx.files.internal(ASSETS_DIR+highScoreArr[1]+".png"));
-			highScrTextr3 = new Texture(Gdx.files.internal(ASSETS_DIR+highScoreArr[2]+".png"));
+			highScrTextr1 = new Texture(Gdx.files.internal(highScoreArr[0]+".png"));
+			highScrTextr2 = new Texture(Gdx.files.internal(highScoreArr[1]+".png"));
+			highScrTextr3 = new Texture(Gdx.files.internal(highScoreArr[2]+".png"));
 		}
 		
 		spriteBatch.draw(highScrTextr1, 315, 370);
@@ -270,19 +268,19 @@ public class GameScreen implements Screen
 	private void drawMedal() {
 		Texture medalTexture = null;
 		if(score<10){
-			medalTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"blank"+".png"));
+			medalTexture = new Texture(Gdx.files.internal("blank"+".png"));
 		}
 		if(score>=10 && score<20){
-			medalTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"bronzeMedal"+".png"));
+			medalTexture = new Texture(Gdx.files.internal("bronzeMedal"+".png"));
 		}
 		else if(score>=20 && score<30){
-			medalTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"silverMedal"+".png"));
+			medalTexture = new Texture(Gdx.files.internal("silverMedal"+".png"));
 		}
 		else if(score>=30 && score<40){
-			medalTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"goldMedal"+".png"));
+			medalTexture = new Texture(Gdx.files.internal("goldMedal"+".png"));
 		}
 		else if(score>=40){
-			medalTexture = new Texture(Gdx.files.internal(ASSETS_DIR+"platMedal"+".png"));
+			medalTexture = new Texture(Gdx.files.internal("platMedal"+".png"));
 		}
 		spriteBatch.draw(medalTexture, 175, 380);
 	}
@@ -412,19 +410,19 @@ public class GameScreen implements Screen
 		char[] scoreArr = scoreStr.toCharArray();
 		
 		if(score < 10){
-			scoreTexture1 = new Texture(Gdx.files.internal(ASSETS_DIR+scoreArr[0]+".png"));
-			scoreTexture2 = new Texture(Gdx.files.internal(ASSETS_DIR+"blank"+".png"));
-			scoreTexture3 = new Texture(Gdx.files.internal(ASSETS_DIR+"blank"+".png"));
+			scoreTexture1 = new Texture(Gdx.files.internal(scoreArr[0]+".png"));
+			scoreTexture2 = new Texture(Gdx.files.internal("blank"+".png"));
+			scoreTexture3 = new Texture(Gdx.files.internal("blank"+".png"));
 		}
 		else if(score < 100){
-			scoreTexture1 = new Texture(Gdx.files.internal(ASSETS_DIR+scoreArr[0]+".png"));
-			scoreTexture2 = new Texture(Gdx.files.internal(ASSETS_DIR+scoreArr[1]+".png"));
-			scoreTexture3 = new Texture(Gdx.files.internal(ASSETS_DIR+"blank"+".png"));
+			scoreTexture1 = new Texture(Gdx.files.internal(scoreArr[0]+".png"));
+			scoreTexture2 = new Texture(Gdx.files.internal(scoreArr[1]+".png"));
+			scoreTexture3 = new Texture(Gdx.files.internal("blank"+".png"));
 		}
 		else if(score < 1000){
-			scoreTexture1 = new Texture(Gdx.files.internal(ASSETS_DIR+scoreArr[0]+".png"));
-			scoreTexture2 = new Texture(Gdx.files.internal(ASSETS_DIR+scoreArr[1]+".png"));
-			scoreTexture3 = new Texture(Gdx.files.internal(ASSETS_DIR+scoreArr[2]+".png"));
+			scoreTexture1 = new Texture(Gdx.files.internal(scoreArr[0]+".png"));
+			scoreTexture2 = new Texture(Gdx.files.internal(scoreArr[1]+".png"));
+			scoreTexture3 = new Texture(Gdx.files.internal(scoreArr[2]+".png"));
 		}
 		
 		// draw the user's score on the screen
