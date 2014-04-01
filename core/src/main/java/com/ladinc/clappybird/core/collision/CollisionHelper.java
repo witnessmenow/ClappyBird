@@ -1,6 +1,7 @@
 package com.ladinc.clappybird.core.collision;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Contact;
@@ -39,23 +40,19 @@ public class CollisionHelper implements ContactListener{
 	}
 
 	private void saveScore() {
-		FileHandle file = Gdx.files.local("data/highscore.txt");
-		String currHigscore = null;
+		Preferences prefs = Gdx.app.getPreferences("My Preferences");
+		Integer highScore = prefs.getInteger("highscore");
 		
-		if(file!=null){
-			currHigscore = file.readString();
+		if(highScore == null){
+			highScore = 0;
+			prefs.putInteger("highscore", highScore);
 		}
 		
-		if(currHigscore!=null){
-			GameScreen.highScr = Integer.parseInt(currHigscore);
-		}
-		else{
-			GameScreen.highScr = 0;
-		}
+		GameScreen.highScr = highScore;
 		
 		if(GameScreen.score>GameScreen.highScr){
 			//overwrite the previous highscore if score is higher than value in the file
-			file.writeString(""+GameScreen.score, false);
+			prefs.putInteger("highscore", highScore);
 		}
 		
 	}
