@@ -64,7 +64,7 @@ public class Bird {
 		GameScreen.gameOver = false;
 		GameScreen.demoOver = false;
 		
-		for(int i =0; i < GameScreen.listPipes.size(); i++){
+		for(int i = 0; i < GameScreen.listPipes.size(); i++){
 			Pipe pipe = GameScreen.listPipes.get(i);
 			
 			pipe.btmPipe.setLinearVelocity(new Vector2(0, 0));
@@ -80,8 +80,9 @@ public class Bird {
 		}
 		
 		GameScreen.score = 0;
-		
+
 		this.body.setTransform(GameScreen.center.x-5, GameScreen.center.y, 0);
+		this.body.setLinearVelocity(new Vector2(0, 0));
 	}
 	
 	public static enum WingPosition{UP, MIDDLEDOWN, MIDDLEUP, DOWN};

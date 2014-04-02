@@ -48,11 +48,11 @@ public class CollisionHelper implements ContactListener{
 			prefs.putInteger("highscore", highScore);
 		}
 		
-		GameScreen.highScr = highScore;
 		
 		if(GameScreen.score>GameScreen.highScr){
 			//overwrite the previous highscore if score is higher than value in the file
-			prefs.putInteger("highscore", highScore);
+			GameScreen.highScr = GameScreen.score;
+			prefs.putInteger("highscore", GameScreen.score);
 		}
 		
 	}
