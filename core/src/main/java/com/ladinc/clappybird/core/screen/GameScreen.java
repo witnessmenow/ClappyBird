@@ -118,6 +118,8 @@ public class GameScreen implements Screen
 	public static Map<String, Texture> textureMap = new HashMap<String, Texture>();
 
 	public static int highScr;
+
+	public static boolean reset = false;
 	
 	public GameScreen(ClappyBird gs)
 	{		
@@ -204,7 +206,13 @@ public class GameScreen implements Screen
 	
 	@Override
 	public void render(float delta) {
-
+		if(reset){
+			removePipesOnGameReset();
+			bird = null;
+			reset = false;
+			world = null;
+			show();
+		}
 		bird.checkForJump();
 	
 		//In demo mode, the bird floats and there is an image indicating to the user to tap the screen
@@ -224,6 +232,39 @@ public class GameScreen implements Screen
         
         
         //debugRenderer.render(world, camera.combined.scale(PIXELS_PER_METER,PIXELS_PER_METER,PIXELS_PER_METER));
+	}
+
+	private void removePipesOnGameReset() {
+		for(int i = 0; i < listPipes.size(); i++){
+		Pipe pipe = listPipes.get(i);
+		
+		pipe.btmPipe.setLinearVelocity(new Vector2(0, 0));
+		pipe.topPipe.setLinearVelocity(new Vector2(0, 0));
+		
+		GameScreen.world.destroyBody(pipe.btmPipe);
+		pipe.btmPipe = null;
+		GameScreen.world.destroyBody(pipe.topPipe);
+		pipe.topPipe = null;
+
+		listPipes.remove(pipe);
+	}
+	
+	for(int j = 0; j<scoresList.size(); j++){
+		Pipe pipe = listPipes.get(j);
+		
+		pipe.btmPipe.setLinearVelocity(new Vector2(0, 0));
+		pipe.topPipe.setLinearVelocity(new Vector2(0, 0));
+		
+		GameScreen.world.destroyBody(pipe.btmPipe);
+		pipe.btmPipe = null;
+		GameScreen.world.destroyBody(pipe.topPipe);
+		pipe.topPipe = null;
+
+		scoresList.remove(pipe);
+
+	}
+	
+		
 	}
 
 	private void showScoreAndHighScore() {
@@ -394,7 +435,7 @@ public class GameScreen implements Screen
 
 	private void calculateAndDisplayScore() {
 		for(Pipe p: listPipes){
-			if(!scoresList.contains(p))
+			if(p!=null && !scoresList.contains(p))
 			{	
 				if(p.getBtmPos().x < center.x - 5){
 					scoresList.add(p);

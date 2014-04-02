@@ -13,6 +13,8 @@ import com.ladinc.clappybird.core.screen.GameScreen;
 
 public class CollisionHelper implements ContactListener{
 
+	private static final String HIGHSCORE = "highscore";
+
 	public CollisionHelper()
 	{
 	}
@@ -41,18 +43,18 @@ public class CollisionHelper implements ContactListener{
 
 	private void saveScore() {
 		Preferences prefs = Gdx.app.getPreferences("My Preferences");
-		Integer highScore = prefs.getInteger("highscore");
+		Integer highScore = prefs.getInteger(HIGHSCORE);
 		
 		if(highScore == null){
 			highScore = 0;
-			prefs.putInteger("highscore", highScore);
+			prefs.putInteger(HIGHSCORE, highScore);
 		}
 		
 		
 		if(GameScreen.score>GameScreen.highScr){
 			//overwrite the previous highscore if score is higher than value in the file
 			GameScreen.highScr = GameScreen.score;
-			prefs.putInteger("highscore", GameScreen.score);
+			prefs.putInteger(HIGHSCORE, GameScreen.score);
 		}
 		
 	}

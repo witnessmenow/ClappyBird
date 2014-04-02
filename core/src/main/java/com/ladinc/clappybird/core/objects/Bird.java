@@ -62,27 +62,13 @@ public class Bird {
 
 	private void resetWorld() {
 		GameScreen.gameOver = false;
-		GameScreen.demoOver = false;
-		
-		for(int i = 0; i < GameScreen.listPipes.size(); i++){
-			Pipe pipe = GameScreen.listPipes.get(i);
-			
-			pipe.btmPipe.setLinearVelocity(new Vector2(0, 0));
-			pipe.topPipe.setLinearVelocity(new Vector2(0, 0));
-			
-			GameScreen.world.destroyBody(pipe.btmPipe);
-			pipe.btmPipe = null;
-			GameScreen.world.destroyBody(pipe.topPipe);
-			pipe.topPipe = null;
+		GameScreen.demoOver = false;	
 
-			GameScreen.listPipes.remove(pipe);
-			GameScreen.scoresList.remove(pipe);	
-		}
-		
 		GameScreen.score = 0;
 
 		this.body.setTransform(GameScreen.center.x-5, GameScreen.center.y, 0);
 		this.body.setLinearVelocity(new Vector2(0, 0));
+		GameScreen.reset = true;
 	}
 	
 	public static enum WingPosition{UP, MIDDLEDOWN, MIDDLEUP, DOWN};
