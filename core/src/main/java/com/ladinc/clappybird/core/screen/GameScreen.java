@@ -220,6 +220,9 @@ public class GameScreen implements Screen
 		
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT); 
 		camera.update();	
+		
+		spriteBatch.setProjectionMatrix(camera.combined);
+		
         world.step(1.0f/60.0f, 10, 10);  
         
         updateTimerValueAndSetDrawPipes(delta);
