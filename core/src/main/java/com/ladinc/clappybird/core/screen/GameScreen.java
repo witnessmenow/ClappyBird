@@ -241,6 +241,7 @@ public class GameScreen implements Screen
 		for(int i = 0; i < listPipes.size(); i++){
 		Pipe pipe = listPipes.get(i);
 		
+		if(pipe.btmPipe != null && pipe.btmPipe.getPosition()!=null){
 		pipe.btmPipe.setLinearVelocity(new Vector2(0, 0));
 		pipe.topPipe.setLinearVelocity(new Vector2(0, 0));
 		
@@ -251,10 +252,12 @@ public class GameScreen implements Screen
 
 		listPipes.remove(pipe);
 	}
-	
+	}
+		
 	for(int j = 0; j<scoresList.size(); j++){
 		Pipe pipe = listPipes.get(j);
 		
+		if(pipe.btmPipe != null && pipe.btmPipe.getPosition()!=null){
 		pipe.btmPipe.setLinearVelocity(new Vector2(0, 0));
 		pipe.topPipe.setLinearVelocity(new Vector2(0, 0));
 		
@@ -264,7 +267,7 @@ public class GameScreen implements Screen
 		pipe.topPipe = null;
 
 		scoresList.remove(pipe);
-
+		}
 	}
 	
 		
@@ -349,9 +352,10 @@ public class GameScreen implements Screen
 	private void setPipesMoving() {
 		if(!gameOver){
 			for(Pipe p : listPipes){
+				if(p.btmPipe!= null && p.btmPipe.getPosition()!=null){
 				p.btmPipe.setLinearVelocity(new Vector2(-10, 0));
 				p.topPipe.setLinearVelocity(new Vector2(-10, 0));
-			}
+			}}
 		}
 	}
 
@@ -424,6 +428,7 @@ public class GameScreen implements Screen
 		for(int i =0; i < listPipes.size(); i++){
 			Pipe pipe = listPipes.get(i);
 			
+			if(pipe.btmPipe!=null && pipe.btmPipe.getPosition()!= null){
 			if(pipe.getBtmPos().x<-10){
 				world.destroyBody(pipe.btmPipe);
 				pipe.btmPipe = null;
@@ -433,12 +438,13 @@ public class GameScreen implements Screen
 				listPipes.remove(pipe);
 				scoresList.remove(pipe);	
 			}
-		}
+		}}
 	}
 
 	private void calculateAndDisplayScore() {
-		for(Pipe p: listPipes){
-			if(p!=null && !scoresList.contains(p))
+		for(Pipe p : listPipes){
+			if(p!=null && p.btmPipe!=null){
+			if(p.btmPipe.getPosition()!=null && !scoresList.contains(p))
 			{	
 				if(p.getBtmPos().x < center.x - 5){
 					scoresList.add(p);
@@ -447,7 +453,7 @@ public class GameScreen implements Screen
 					//The user's score is the size of the list then
 					score = score + 1;
 				}
-			}
+			}}
 		}	
 		
 		String scoreStr = String.valueOf(score);

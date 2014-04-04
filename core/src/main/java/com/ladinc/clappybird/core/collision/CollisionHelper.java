@@ -29,9 +29,10 @@ public class CollisionHelper implements ContactListener{
 		
 			//stop the pipes from moving on game over
 			for(Pipe p : GameScreen.listPipes){
-				p.btmPipe.setLinearVelocity(new Vector2(0, 0));
-				p.topPipe.setLinearVelocity(new Vector2(0, 0));
-	
+				if(p.btmPipe!=null && p.btmPipe.getPosition()!=null){
+					p.btmPipe.setLinearVelocity(new Vector2(0, 0));
+					p.topPipe.setLinearVelocity(new Vector2(0, 0));
+				}
 			}
 			
 			//if the bird hits a pipe we want it fall vertically down, not bounce off the pipe backwards
