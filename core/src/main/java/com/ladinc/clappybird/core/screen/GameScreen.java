@@ -241,7 +241,6 @@ public class GameScreen implements Screen
 		for(int i = 0; i < listPipes.size(); i++){
 		Pipe pipe = listPipes.get(i);
 		
-		if(pipe.btmPipe != null && pipe.btmPipe.getPosition()!=null){
 		pipe.btmPipe.setLinearVelocity(new Vector2(0, 0));
 		pipe.topPipe.setLinearVelocity(new Vector2(0, 0));
 		
@@ -251,13 +250,12 @@ public class GameScreen implements Screen
 		pipe.topPipe = null;
 
 		listPipes.remove(pipe);
-	}
+		pipe = null;
 	}
 		
 	for(int j = 0; j<scoresList.size(); j++){
 		Pipe pipe = listPipes.get(j);
 		
-		if(pipe.btmPipe != null && pipe.btmPipe.getPosition()!=null){
 		pipe.btmPipe.setLinearVelocity(new Vector2(0, 0));
 		pipe.topPipe.setLinearVelocity(new Vector2(0, 0));
 		
@@ -265,9 +263,8 @@ public class GameScreen implements Screen
 		pipe.btmPipe = null;
 		GameScreen.world.destroyBody(pipe.topPipe);
 		pipe.topPipe = null;
-
 		scoresList.remove(pipe);
-		}
+		pipe = null;
 	}
 	
 		
@@ -409,6 +406,8 @@ public class GameScreen implements Screen
 		
 		if(!demoOver)spriteBatch.draw(textureMap.get(DEMO), 250, 320);
 		
+		cleanUpPipes();
+		
 		calculateAndDisplayScore();
 				
 		if(gameOver){
@@ -417,6 +416,16 @@ public class GameScreen implements Screen
 		}
 		
 		spriteBatch.end();
+	}
+
+	private void cleanUpPipes() {
+		for(int i = 0; i<listPipes.size(); i++){
+			if(listPipes.get(i).btmPipe == null){
+				listPipes.remove(i);
+				scoresList.remove(i);
+			}
+		}
+		
 	}
 
 	private void showRetryBtn() {
@@ -428,22 +437,20 @@ public class GameScreen implements Screen
 		for(int i =0; i < listPipes.size(); i++){
 			Pipe pipe = listPipes.get(i);
 			
-			if(pipe.btmPipe!=null && pipe.btmPipe.getPosition()!= null){
 			if(pipe.getBtmPos().x<-10){
 				world.destroyBody(pipe.btmPipe);
 				pipe.btmPipe = null;
 				world.destroyBody(pipe.topPipe);
 				pipe.topPipe = null;
-
+				
 				listPipes.remove(pipe);
-				scoresList.remove(pipe);	
-			}
+				scoresList.remove(pipe);
+				pipe = null;
 		}}
 	}
 
 	private void calculateAndDisplayScore() {
 		for(Pipe p : listPipes){
-			if(p!=null && p.btmPipe!=null){
 			if(p.btmPipe.getPosition()!=null && !scoresList.contains(p))
 			{	
 				if(p.getBtmPos().x < center.x - 5){
@@ -453,8 +460,8 @@ public class GameScreen implements Screen
 					//The user's score is the size of the list then
 					score = score + 1;
 				}
-			}}
-		}	
+			}
+		}
 		
 		String scoreStr = String.valueOf(score);
 		char[] scoreArr = scoreStr.toCharArray();
