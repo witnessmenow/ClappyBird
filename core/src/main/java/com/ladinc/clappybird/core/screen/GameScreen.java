@@ -350,8 +350,8 @@ public class GameScreen implements Screen
 		if(!gameOver){
 			for(Pipe p : listPipes){
 				if(p.btmPipe!= null && p.btmPipe.getPosition()!=null){
-				p.btmPipe.setLinearVelocity(new Vector2(-10, 0));
-				p.topPipe.setLinearVelocity(new Vector2(-10, 0));
+				p.btmPipe.setLinearVelocity(new Vector2(-15, 0));
+				p.topPipe.setLinearVelocity(new Vector2(-15, 0));
 			}}
 		}
 	}
