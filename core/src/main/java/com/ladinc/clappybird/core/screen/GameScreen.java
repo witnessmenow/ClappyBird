@@ -8,6 +8,7 @@ import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -121,6 +122,8 @@ public class GameScreen implements Screen
 
 	public static boolean reset = false;
 	
+	public static Sound flapSound;
+	
 	public GameScreen(ClappyBird gs)
 	{		
     	this.screenWidth = 480;
@@ -138,7 +141,7 @@ public class GameScreen implements Screen
         //debugRenderer = new Box2DDebugRenderer();
         
         setUpTextureMap();
-        
+        flapSound = Gdx.audio.newSound(Gdx.files.internal("flap.mp3"));
 	}
 	
 	private void setUpTextureMap() {
@@ -249,23 +252,28 @@ public class GameScreen implements Screen
 		GameScreen.world.destroyBody(pipe.topPipe);
 		pipe.topPipe = null;
 
-		listPipes.remove(pipe);
 		pipe = null;
 	}
 		
+	listPipes.clear();
+	
 	for(int j = 0; j<scoresList.size(); j++){
-		Pipe pipe = listPipes.get(j);
+		Pipe pipe = scoresList.get(j);
 		
-		pipe.btmPipe.setLinearVelocity(new Vector2(0, 0));
-		pipe.topPipe.setLinearVelocity(new Vector2(0, 0));
+		if(pipe.btmPipe!=null){
+			pipe.btmPipe.setLinearVelocity(new Vector2(0, 0));
+			GameScreen.world.destroyBody(pipe.btmPipe);
+			pipe.btmPipe = null;
+		}
+		if(pipe.topPipe!=null){
+			pipe.topPipe.setLinearVelocity(new Vector2(0, 0));
+			GameScreen.world.destroyBody(pipe.topPipe);
+			pipe.topPipe = null;
+		}
 		
-		GameScreen.world.destroyBody(pipe.btmPipe);
-		pipe.btmPipe = null;
-		GameScreen.world.destroyBody(pipe.topPipe);
-		pipe.topPipe = null;
-		scoresList.remove(pipe);
 		pipe = null;
 	}
+	scoresList.clear();
 	
 		
 	}

@@ -1,7 +1,7 @@
 package com.ladinc.clappybird.core.objects;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -51,6 +51,7 @@ public class Bird {
 			}
 
 			if(GameScreen.demoOver && !GameScreen.gameOver){
+				GameScreen.flapSound.play();
 				this.body.setLinearVelocity(new Vector2(0,0));
 				this.body.applyForce(this.body.getWorldVector(new Vector2(0.0f, 130000.0f)), this.body.getWorldCenter() , true );
 			}

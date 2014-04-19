@@ -2,7 +2,7 @@ package com.ladinc.clappybird.core.collision;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
@@ -14,6 +14,7 @@ import com.ladinc.clappybird.core.screen.GameScreen;
 public class CollisionHelper implements ContactListener{
 
 	private static final String HIGHSCORE = "highscore";
+	private Sound hitSound;
 
 	public CollisionHelper()
 	{
@@ -26,7 +27,9 @@ public class CollisionHelper implements ContactListener{
 		//boolean used to disable pipe and bird movement and show the game over screen
 		if(GameScreen.demoOver && !GameScreen.gameOver){
 			GameScreen.gameOver = true;  
-		
+			hitSound = Gdx.audio.newSound(Gdx.files.internal("hit.mp3"));
+			hitSound.play();
+			
 			//stop the pipes from moving on game over
 			for(Pipe p : GameScreen.listPipes){
 				if(p.btmPipe!=null && p.btmPipe.getPosition()!=null){
