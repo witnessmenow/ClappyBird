@@ -28,7 +28,7 @@ public class CollisionHelper implements ContactListener{
 		if(GameScreen.demoOver && !GameScreen.gameOver){
 			GameScreen.gameOver = true;  
 			hitSound = Gdx.audio.newSound(Gdx.files.internal("hit.mp3"));
-			hitSound.play();
+			GameScreen.playSound(hitSound);
 			
 			//stop the pipes from moving on game over
 			for(Pipe p : GameScreen.listPipes){

@@ -51,7 +51,7 @@ public class Bird {
 			}
 
 			if(GameScreen.demoOver && !GameScreen.gameOver){
-				GameScreen.flapSound.play();
+				GameScreen.playSound(GameScreen.flapSound);
 				this.body.setLinearVelocity(new Vector2(0,0));
 				this.body.applyForce(this.body.getWorldVector(new Vector2(0.0f, 130000.0f)), this.body.getWorldCenter() , true );
 			}

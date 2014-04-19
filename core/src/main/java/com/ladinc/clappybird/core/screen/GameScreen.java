@@ -110,6 +110,8 @@ public class GameScreen implements Screen
 
 	private Texture gameOverTexture;
 
+	private Sound scoreSound;
+
 	public static boolean gameOver = false;
 
 	public static int score;
@@ -462,6 +464,8 @@ public class GameScreen implements Screen
 			if(p.btmPipe.getPosition()!=null && !scoresList.contains(p))
 			{	
 				if(p.getBtmPos().x < center.x - 5){
+					scoreSound = Gdx.audio.newSound(Gdx.files.internal("score.mp3"));
+					playSound(scoreSound);
 					scoresList.add(p);
 					//keep a unique list of the pipes that have passed the centre x point.
 					//Only add them to the list if they have newly passed this point
@@ -592,6 +596,10 @@ public class GameScreen implements Screen
 	
 	public static Bird getBird(){
 		return bird;
+	}
+	
+	public static synchronized void playSound(Sound sound){
+		sound.play();
 	}
 
 }
