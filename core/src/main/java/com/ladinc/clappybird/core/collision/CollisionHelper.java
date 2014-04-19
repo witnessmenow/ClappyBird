@@ -44,20 +44,24 @@ public class CollisionHelper implements ContactListener{
 
 	private void saveScore() {
 		Preferences prefs = Gdx.app.getPreferences("My Preferences");
-		Integer highScore = prefs.getInteger(HIGHSCORE);
+		Integer currHighScore = prefs.getInteger(HIGHSCORE);
 		
-		if(highScore == null){
-			highScore = 0;
-			prefs.putInteger(HIGHSCORE, highScore);
+		if(currHighScore == null){
+			currHighScore = 0;
+			prefs.putInteger(HIGHSCORE, currHighScore);
 		}
 		
 		
-		if(GameScreen.score>GameScreen.highScr){
+		if(GameScreen.score>currHighScore){
 			//overwrite the previous highscore if score is higher than value in the file
 			GameScreen.highScr = GameScreen.score;
 			prefs.putInteger(HIGHSCORE, GameScreen.score);
+			prefs.flush();
 		}
-		
+		else{
+			//do not overwrite the highscore on file. The current higscore is still valid
+			GameScreen.highScr = currHighScore;
+		}
 	}
 
 	@Override
