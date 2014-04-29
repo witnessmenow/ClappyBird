@@ -22,9 +22,6 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.google.android.gms.ads.a;
-import com.ladinc.clappybird.android.ActionResolver;
-import com.ladinc.clappybird.core.AudioThread;
 import com.ladinc.clappybird.core.ClappyBird;
 import com.ladinc.clappybird.core.collision.CollisionHelper;
 import com.ladinc.clappybird.core.objects.Bird;
@@ -71,8 +68,6 @@ public class GameScreen implements Screen
     
     private Box2DDebugRenderer debugRenderer;
     
-    private AudioThread audioThread;
-
 	private Texture birdMidTexture;
     private Sprite birdSprite ;
     
@@ -128,7 +123,7 @@ public class GameScreen implements Screen
 	
 	public static Sound flapSound;
 	
-	private ActionResolver actionResolver;
+	//private ActionResolver actionResolver;
 	
 	public GameScreen(ClappyBird gs)
 	{		
@@ -325,12 +320,6 @@ public class GameScreen implements Screen
 
 	private void drawMedal() {
 		Texture medalTexture = null;
-		boolean isAndroid = checkDeviceIsAndroid();
-		
-		if(isAndroid){
-			actionResolver.submitScoreGPGS(score);
-			actionResolver.unlockAchievementGPGS(score);
-		}
 		if(score<10){
 			medalTexture = new Texture(Gdx.files.internal("blank"+".png"));
 		}
@@ -347,20 +336,6 @@ public class GameScreen implements Screen
 			medalTexture = new Texture(Gdx.files.internal("platMedal"+".png"));
 		}
 		spriteBatch.draw(medalTexture, 175, 380);
-	}
-
-	private boolean checkDeviceIsAndroid() {
-		boolean response = false;
-		switch(Gdx.app.getType()) {
-		   case Android:
-			   response = true;
-		       // android specific code
-		   case Desktop:
-		       // desktop specific code
-		   case WebGL:
-		       /// HTML5 specific code
-		}
-		return response;
 	}
 
 	private void floatyDemoBird() {
